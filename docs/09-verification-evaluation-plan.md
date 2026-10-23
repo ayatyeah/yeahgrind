@@ -21,7 +21,7 @@
 | FR-05 – FR-09 | Input limits, injection set, skill-map acyclicity, unit limits, source spans | Vitest with recorded provider responses; B4 | Integration + benchmark |
 | FR-10 – FR-15 | Eligibility, priority, plan fitting, explanation fidelity, spaced-review scheduler (10 scenarios) | Vitest + fast-check property tests; B1 | Unit + benchmark |
 | FR-16 – FR-18 | Calendar rendering of all sources; iCalendar parsing (time zones, recurrence, cancellations); encrypted URL; import preview and undo | Vitest with `.ics` fixtures; Playwright | Integration + E2E |
-| FR-19 – FR-24, NFR-03, NFR-13 | Job states, retries, reuse (call counter), script validation, output probe (duration, audio, captions), player accessibility | Vitest with fake providers; ffprobe checks; Playwright; B3 | Integration + benchmark |
+| FR-19 – FR-24, NFR-03, NFR-13 | Job states, retries, reuse (call counter), script validation, output checks (narration length from the WAV header, WebVTT cues, exported file loads in a `<video>` element), player accessibility | Vitest with fake providers; Playwright; B3 | Integration + benchmark |
 | FR-25 – FR-30, NFR-02 | Item validation, selection rule, no repeats, stopping rule, Elo update direction, idempotent answers, hidden keys and rubrics, report values | Vitest; B2, B5 | Unit + benchmark |
 | FR-31 – FR-36 | Friendship states, visibility filtering, blocking, comments, group progress, report creation, moderation actions and audit | Vitest; Playwright | Integration + E2E |
 | FR-37 – FR-39, NFR-07 | Ledger uniqueness under 100 parallel duplicates, purchases, no-penalty inspection, quiet hours across time zones | Vitest with concurrent requests and fake clock | Integration |
@@ -79,7 +79,7 @@ Acceptance scenarios in Given/When/Then form are kept in [`tests/acceptance/`](.
   - success rate after retries;
   - p50 and p90 total time;
   - duration within 60–120 s;
-  - audio and caption presence (ffprobe).
+  - audio and caption presence (narration WAV and WebVTT cues for every clip; the exported MP4/WebM loads in a browser `<video>` element).
 - **Grounding:** 20 scripts with 10 injected factual errors (wrong numbers, swapped terms, unsupported claims); share of errors flagged by validation.
 - **Quality rating:** 3 student raters score 20 random videos (1–5) on accuracy, clarity, audio quality and caption sync.
 - **Cost:** tokens and TTS characters per video, converted to USD at current prices.
@@ -180,7 +180,7 @@ Failed thresholds are reported together with the corrective YouTrack task.
 | TC-07 | Check-in with 40 free minutes | Planned time ≤ 40 min; every item has a reason |
 | TC-08 | Review due for a mastered skill | Review item included in today\'s plan |
 | TC-09 | Moodle calendar connection and refresh | Deadlines and course names imported; changed and canceled events updated; URL never returned |
-| TC-10 | First request for a unit video | Status 202; job runs; MP4 60–120 s with audio and WebVTT |
+| TC-10 | First request for a unit video | Status 202; job runs; narration 60–120 s with WebVTT captions; the player shows slides in sync and exports MP4 or WebM |
 | TC-11 | Second request for the same video | Status 200; no new LLM or TTS call |
 | TC-12 | Script with an ungrounded sentence | Status needs_review; not visible to students; listed in moderation queue |
 | TC-13 | LLM or TTS timeout during a video job | Retried up to 3 times, then failed with a message; no fake output |
