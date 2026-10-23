@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GradingOutput (AI gateway → Learning module)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["score", "strengths", "improvement", "revealsSolution"],
+  "properties": {
+    "score": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "strengths": { "type": "array", "minItems": 1, "maxItems": 3, "items": { "type": "string", "maxLength": 300 } },
+    "improvement": { "type": "string", "maxLength": 400 },
+    "revealsSolution": { "type": "boolean", "description": "Self-check flag; responses with true are rejected and retried" }
+  }
+}

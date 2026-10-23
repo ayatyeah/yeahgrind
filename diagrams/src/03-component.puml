@@ -1,0 +1,91 @@
+@startuml 03-component
+!pragma layout smetana
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultFontSize 12
+title YeahGrind — Component Diagram (draft)
+
+node "Browser / installed PWA" {
+  [UI screens\n(Today, Unit, Quiz,\nMastery, Feed, Groups, Settings)] as UI
+  [Video player & recorder\n(canvas slides in sync with narration,\ncaptions, MediaRecorder → MP4/WebM)] as Player
+  [Client state store\n(per-account cache)] as Store
+  [Service worker\n(offline plan, push)] as SW
+}
+
+node "Next.js app (modular monolith)" {
+  [API layer\nREST, schema validation,\nownership guard] as API
+  [Auth\n(Auth.js v5, OIDC)] as Auth
+  package "Domain modules" {
+    [Identity & Consent] as Consent
+    [Content\n(goals, skill map,\nmicro-units)] as Content
+    [Pathway engine\n(eligibility, priority,\nplan, spaced review)] as Traj
+    [Assessment engine\n(item bank, Elo ability &\ndifficulty, mastery, reports)] as Assess
+    [Video\n(job API, reuse, captions)] as Video
+    [Social\n(friends, feed, groups)] as Social
+    [Moderation] as Mod
+    [Planning & Calendar\n(day plan, LMS deadlines)] as Plan
+    [Rewards ledger &\nGamification] as Rewards
+    [Notifications] as Notif
+  }
+  package "Background jobs (after the response)" {
+    [Job runner\n(claim and renew job rows,\nretries ≤ 3)] as Jobs
+    [Video job\nscript → check → narration\n→ timings] as Pipe
+    [Content generation\n(skill map, units, items)] as Gen
+    [LMS iCalendar importer] as LMS
+  }
+  [AI gateway\nprovider adapters, JSON schema,\nlimits, metering] as GW
+  [Data access\n(Prisma ORM)] as DAL
+}
+
+database "PostgreSQL\n(data, job rows,\nnarration audio)" as DB
+cloud "LLM provider" as LLM
+cloud "TTS provider\n(Gemini TTS)" as TTS
+cloud "GitHub Actions\nschedules" as Cron
+cloud "Microsoft Entra ID" as Entra
+cloud "Moodle LMS" as Moodle
+
+UI --> Store
+UI --> Player
+Store --> API : HTTPS / JSON
+Player --> API : script, narration (range requests)
+SW --> API
+API --> Auth
+Auth --> Entra
+API --> Consent
+API --> Content
+API --> Traj
+API --> Assess
+API --> Video
+API --> Social
+API --> Mod
+API --> Plan
+API --> Rewards
+Traj --> Assess : mastery
+Traj --> Plan : free time, deadlines
+Assess --> Rewards
+Content --> Jobs : start generation
+Video --> Jobs : start video job
+Assess --> GW : open-answer grading
+Jobs --> Gen
+Jobs --> Pipe
+Gen --> GW
+Pipe --> GW
+GW --> LLM
+GW --> TTS
+Cron --> API : protected job endpoints
+API --> LMS
+API --> Notif
+LMS --> Moodle
+Consent --> DAL
+Content --> DAL
+Traj --> DAL
+Assess --> DAL
+Video --> DAL
+Social --> DAL
+Mod --> DAL
+Plan --> DAL
+Rewards --> DAL
+Notif --> DAL
+Jobs --> DAL : claim job rows
+DAL --> DB
+@enduml

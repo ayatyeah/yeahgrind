@@ -1,0 +1,15 @@
+{
+  "goalId": "0b8f3c1e-5d7a-4a43-9a1b-2f6c1d9e7a10",
+  "skills": [
+    { "id": "s-select", "name": "SELECT", "prerequisites": [], "state": "mastered", "mastery": 0.93 },
+    { "id": "s-where", "name": "WHERE", "prerequisites": ["s-select"], "state": "mastered", "mastery": 0.9 },
+    { "id": "s-order", "name": "ORDER BY", "prerequisites": ["s-select"], "state": "review_due", "mastery": 0.86 },
+    { "id": "s-ljoin", "name": "LEFT JOIN", "prerequisites": ["s-where"], "state": "current", "mastery": 0.62 },
+    { "id": "s-group", "name": "GROUP BY", "prerequisites": ["s-where"], "state": "available", "mastery": 0.35 },
+    { "id": "s-having", "name": "HAVING", "prerequisites": ["s-ljoin", "s-group"], "state": "locked", "mastery": 0.12 }
+  ],
+  "pathway": [
+    { "unitId": "u-ljoin-1", "title": "LEFT JOIN — keep all rows", "minutes": 10, "priority": 0.81 },
+    { "unitId": "u-group-1", "title": "GROUP BY basics", "minutes": 12, "priority": 0.74 }
+  ]
+}

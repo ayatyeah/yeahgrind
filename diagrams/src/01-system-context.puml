@@ -1,0 +1,31 @@
+@startuml 01-system-context
+!pragma layout smetana
+!include <C4/C4_Context>
+
+title YeahGrind — System Context (C4 level 1)
+
+LAYOUT_WITH_LEGEND()
+
+Person(student, "Student", "AITU undergraduate (18+): learns in micro-units, watches short videos, takes adaptive quizzes, studies with friends")
+Person(member, "Study-group member", "Student who shares a goal and progress with a group")
+Person(mod, "Moderator", "Project team role: reviews reported and unverified generated content")
+
+System(yg, "YeahGrind", "Intelligent social learning platform (PWA): skill maps and micro-units, personalized pathway, short-form video generation, adaptive assessment, social learning")
+
+System_Ext(entra, "Microsoft Entra ID", "University tenant; OpenID Connect sign-in")
+System_Ext(lms, "Moodle LMS (AITU)", "Personal calendar export (iCalendar) with deadlines and course names")
+System_Ext(llm, "LLM provider API", "Skill maps, units, scripts, questions, grading (JSON-schema output)")
+System_Ext(tts, "Gemini TTS (Google AI)", "Narration audio for video scripts (EN, RU; KK after a native-speaker check)")
+System_Ext(sched, "GitHub Actions (schedules)", "Triggers the LMS refresh 3×/day and reminders")
+System_Ext(push, "Web Push services", "FCM / APNs / Mozilla")
+
+Rel(student, yg, "Learns, practices, shares", "HTTPS")
+Rel(member, yg, "Group goal, challenges, comments", "HTTPS")
+Rel(mod, yg, "Reviews queue", "HTTPS")
+Rel(yg, entra, "Delegates sign-in", "OIDC + PKCE")
+Rel(yg, lms, "Fetches deadlines 3×/day", "HTTPS, iCalendar")
+Rel(yg, llm, "Pseudonymous prompts → JSON", "HTTPS")
+Rel(yg, tts, "Script text → audio", "HTTPS")
+Rel(sched, yg, "Calls protected job endpoints", "HTTPS + secret")
+Rel(yg, push, "Reminders outside quiet hours", "Web Push, VAPID")
+@enduml

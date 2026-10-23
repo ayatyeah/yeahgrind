@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VideoScript (LLM → video pipeline)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "sentences", "slides"],
+  "properties": {
+    "title": { "type": "string", "maxLength": 80 },
+    "sentences": {
+      "type": "array", "minItems": 6, "maxItems": 24,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["text", "sourceRef"],
+        "properties": {
+          "text": { "type": "string", "maxLength": 220 },
+          "sourceRef": { "type": "string", "description": "ID of the source span or unit paragraph the sentence is based on" }
+        }
+      }
+    },
+    "slides": {
+      "type": "array", "minItems": 2, "maxItems": 8,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["fromSentence", "heading", "bullets"],
+        "properties": {
+          "fromSentence": { "type": "integer", "minimum": 0 },
+          "heading": { "type": "string", "maxLength": 60 },
+          "bullets": { "type": "array", "maxItems": 4, "items": { "type": "string", "maxLength": 90 } },
+          "code": { "type": ["string", "null"], "maxLength": 400 }
+        }
+      }
+    }
+  }
+}

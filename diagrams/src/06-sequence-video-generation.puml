@@ -1,0 +1,50 @@
+@startuml 06-sequence-video-generation
+!pragma layout smetana
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+title Scenario S3: short-form video generation (asynchronous job)
+
+actor Student
+participant "PWA\n(player & recorder)" as UI
+participant "API / Video\nmodule" as API
+database PostgreSQL as DB
+participant "Background job\n(after the response)" as W
+participant "AI gateway" as GW
+participant "LLM provider" as LLM
+participant "TTS provider\n(Gemini)" as TTS
+
+Student -> UI : open micro-unit
+UI -> API : POST /api/v1/units/{id}/video
+API -> DB : find Video(unit, version, lang)
+alt already succeeded
+  API --> UI : 200 + video (reuse)
+else not yet generated
+  API -> DB : insert Video(status = queued)
+  API --> UI : 202 Accepted + video ID
+  W -> DB : claim row (conditional update), status = running
+  W -> GW : script(unit paragraphs, lang)
+  GW -> LLM : prompt + JSON schema
+  LLM --> GW : {scenes[], sentences[] with paragraph refs}
+  W -> GW : check every sentence against its paragraph
+  W -> DB : renew claim
+  alt issues found
+    W -> DB : status = needs_review (owner approves or rewrites)
+  else valid
+    W -> GW : synthesize(whole script, voice)
+    GW -> TTS : text (no personal data)
+    TTS --> GW : WAV audio
+    W -> W : scene and sentence timings\nfrom audio length and word counts
+    W -> DB : narration + script + timings;\nstatus = succeeded (only if claim still held)
+  end
+end
+UI -> API : GET /api/v1/videos/{videoId} (poll)
+API --> UI : status; script, timings, narration URL when ready
+UI -> UI : draw 9:16 slides on canvas in sync with audio;\ncaptions, transcript, sources
+opt download
+  UI -> UI : MediaRecorder: canvas + audio → MP4/WebM;\nWebVTT from timings
+end
+alt provider failure or lost process
+  W -> DB : attempts += 1; retry ≤ 3, then failed
+  API -> W : stale claim (10 min) restarted on next poll
+end
+@enduml

@@ -1,0 +1,11 @@
+{
+  "id": "9a7c2b44-1e0f-4c55-8f0e-5b2d7e6c1a33",
+  "unitId": "u-ljoin-1",
+  "language": "ru",
+  "status": "succeeded",
+  "durationSec": 90,
+  "mediaUrl": "https://cdn.example.invalid/v/9a7c2b44.mp4?sig=…&exp=…",
+  "captionsUrl": "https://cdn.example.invalid/v/9a7c2b44.vtt?sig=…&exp=…",
+  "transcript": "LEFT JOIN возвращает все строки левой таблицы…",
+  "sources": [ { "sentence": 1, "sourceSpan": "lecture-5-joins.pdf p.6" }, { "sentence": 2, "sourceSpan": "lecture-5-joins.pdf p.7" } ]
+}

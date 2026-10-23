@@ -1,0 +1,9 @@
+{
+  "correct": true,
+  "score": null,
+  "explanation": "LEFT JOIN keeps all 50 students; the 8 without grades get NULL, and WHERE g.score IS NULL keeps exactly them.",
+  "strengths": [],
+  "improvement": null,
+  "mastery": { "skillId": "s-ljoin", "name": "LEFT JOIN", "before": 0.62, "mastery": 0.78, "mastered": false, "reviewDueAt": null },
+  "reward": { "xp": 5, "coins": 0, "alreadyGranted": false }
+}

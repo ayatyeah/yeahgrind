@@ -1,0 +1,41 @@
+@startuml 05-sequence-trajectory-quiz
+!pragma layout smetana
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+title Scenario S2–S4: check-in → micro-plan → unit → adaptive quiz → mastery update
+
+actor Student
+participant "PWA" as UI
+participant "API layer" as API
+participant "Pathway\nengine" as Traj
+participant "Assessment\nengine" as Ass
+database PostgreSQL as DB
+
+Student -> UI : check-in: energy 3, 40 free min
+UI -> API : POST /api/v1/checkins
+UI -> API : GET /api/v1/plan/today
+API -> Traj : buildPlan(user, checkIn)
+Traj -> DB : mastery, prerequisites, review due,\nLMS deadlines, free slots
+Traj -> Traj : eligible = prerequisites mastered\npriority = gap + goal + review + deadline\nfill 40 min greedily
+Traj --> API : 3 units + reasons
+API --> UI : plan (e.g. "Quiz in Databases in 3 days")
+Student -> UI : open unit "LEFT JOIN", watch 90 s video
+UI -> API : GET /api/v1/units/{id}
+Student -> UI : start quiz
+loop until confidence reached or 10 items
+  UI -> API : GET /api/v1/quizzes/{id}/next
+  API -> Ass : select(θ, items of unit skills)
+  Ass -> Ass : P(correct) = 1 / (1 + e^-(θ_skill − b))\npick item with P closest to 0.7, no repeats
+  Ass --> UI : question (no answer key)
+  Student -> UI : answer
+  UI -> API : POST /api/v1/quizzes/{id}/answers\nIdempotency-Key
+  API -> Ass : record(answer)
+  Ass -> DB : BEGIN; insert Attempt (unique key)
+  Ass -> Ass : θ_skill += K(n)·(y − P); b −= K_b(n)·(y − P)\nmastery = σ(θ_skill − b_typical)
+  Ass -> DB : update Mastery, Question.b; COMMIT
+  Ass --> UI : correct? + explanation
+end
+API -> Traj : recompute(user)  [≤ 2 s]
+Traj --> UI : updated plan, review dates
+UI -> Student : mastery change, next recommended unit
+@enduml

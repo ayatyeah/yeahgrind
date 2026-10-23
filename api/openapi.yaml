@@ -1,0 +1,673 @@
+openapi: 3.1.0
+info:
+  title: YeahGrind API
+  version: 0.2.0-draft
+  description: |
+    Draft REST contract of the YeahGrind platform (pre-defense 1): personalized
+    microlearning pathway, short-form video generation, adaptive assessment and
+    social learning. All endpoints require an authenticated session cookie.
+    Every resource is scoped to the signed-in user; requests for another user's
+    private resources return 404. Errors use application/problem+json.
+    Requirement IDs (FR-xx) refer to docs/06-requirements-specification.md.
+servers:
+  - url: https://staging.example.invalid/api/v1
+    description: Staging (placeholder)
+tags:
+  - name: Goals & content
+  - name: Pathway
+  - name: Video
+  - name: Assessment
+  - name: Social
+  - name: Moderation
+  - name: Integrations
+  - name: Privacy
+
+paths:
+  /goals:
+    post:
+      tags: [Goals & content]
+      summary: Create a goal (optionally with material) and start skill-map generation (FR-05 – FR-09)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/GoalInput' }
+            example: { title: "Pass the SQL quiz", subject: "Databases", level: 2, dailyBudgetMin: 25, material: "Lecture 5. Joins. A LEFT JOIN returns ..." }
+      responses:
+        '202':
+          description: Goal created; generation job queued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  goalId: { type: string, format: uuid }
+                  job: { $ref: '#/components/schemas/Job' }
+        '413': { $ref: '#/components/responses/TooLarge' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+  /goals/{goalId}/path:
+    get:
+      tags: [Pathway]
+      summary: Skill map with mastery states and the ordered pathway (FR-08, FR-11)
+      parameters: [ { $ref: '#/components/parameters/GoalId' } ]
+      responses:
+        '200':
+          description: Path
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Path' }
+              examples:
+                default: { externalValue: './examples/path-response.json' }
+
+  /checkins:
+    post:
+      tags: [Pathway]
+      summary: Store today's check-in (FR-12)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [energy, freeMinutes]
+              properties:
+                energy: { type: integer, minimum: 1, maximum: 5 }
+                freeMinutes: { type: integer, minimum: 0, maximum: 720 }
+      responses:
+        '200': { description: Stored }
+
+  /plan/today:
+    get:
+      tags: [Pathway]
+      summary: Today's micro-plan with reasons (FR-12, FR-13, FR-16)
+      responses:
+        '200':
+          description: Plan items that fit the free minutes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  freeMinutes: { type: integer }
+                  plannedMinutes: { type: integer }
+                  items: { type: array, items: { $ref: '#/components/schemas/PlanItem' } }
+              examples:
+                default: { externalValue: './examples/plan-today-response.json' }
+
+  /plan/items/{itemId}:
+    patch:
+      tags: [Pathway]
+      summary: Accept, postpone or complete a plan item (FR-14)
+      parameters:
+        - { name: itemId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action: { type: string, enum: [accept, postpone, complete] }
+      responses:
+        '200': { description: Updated plan item }
+
+  /units/{unitId}:
+    get:
+      tags: [Goals & content]
+      summary: Micro-unit content, skills and video state (FR-09, FR-24)
+      parameters: [ { $ref: '#/components/parameters/UnitId' } ]
+      responses:
+        '200':
+          description: Unit
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MicroUnit' }
+
+  /units/{unitId}/video:
+    post:
+      tags: [Video]
+      summary: Get or generate the short video for a unit (FR-19, FR-20, FR-22)
+      parameters: [ { $ref: '#/components/parameters/UnitId' } ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                language: { type: string, enum: [en, ru, kk], default: en }
+      responses:
+        '200':
+          description: Existing video reused
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Video' }
+        '202':
+          description: Generation job queued
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Video' }
+        '409': { description: Language not enabled (e.g. Kazakh before quality check), content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } } }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+  /videos/{videoId}:
+    get:
+      tags: [Video]
+      summary: Video status; signed media and caption URLs when ready (FR-20, FR-24)
+      parameters:
+        - { name: videoId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Video
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Video' }
+              examples:
+                default: { externalValue: './examples/video-response.json' }
+
+  /quizzes:
+    post:
+      tags: [Assessment]
+      summary: Start an adaptive quiz for a unit, a review or the placement test (FR-10, FR-26)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [mode]
+              properties:
+                mode: { type: string, enum: [unit, review, placement] }
+                unitId: { type: string, format: uuid }
+                goalId: { type: string, format: uuid }
+      responses:
+        '201':
+          description: Quiz created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  quizId: { type: string, format: uuid }
+                  maxItems: { type: integer, example: 10 }
+
+  /quizzes/{quizId}/next:
+    get:
+      tags: [Assessment]
+      summary: Next adaptively selected question, or the end of the quiz (FR-26)
+      parameters: [ { $ref: '#/components/parameters/QuizId' } ]
+      responses:
+        '200':
+          description: Next question (answer key never included)
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/QuestionView'
+                  - $ref: '#/components/schemas/QuizSummary'
+
+  /quizzes/{quizId}/answers:
+    post:
+      tags: [Assessment]
+      summary: Submit an answer; updates ability, difficulty and mastery (FR-27, FR-28)
+      parameters:
+        - { $ref: '#/components/parameters/QuizId' }
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [questionId]
+              properties:
+                questionId: { type: string, format: uuid }
+                choice: { type: string, description: Option ID for multiple choice }
+                text: { type: string, maxLength: 6000, description: Short answer or code (never executed) }
+                responseMs: { type: integer }
+      responses:
+        '200':
+          description: Result and mastery change; repeated keys return the stored result
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AnswerResult' }
+              examples:
+                default: { externalValue: './examples/answer-response.json' }
+        '503': { $ref: '#/components/responses/AiUnavailable' }
+
+  /questions/{questionId}/hints:
+    post:
+      tags: [Assessment]
+      summary: Next graduated hint, max 2; never the answer (FR-29)
+      parameters:
+        - { name: questionId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Hint
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  level: { type: integer, minimum: 1, maximum: 2 }
+                  hint: { type: string }
+
+  /mastery:
+    get:
+      tags: [Assessment]
+      summary: Mastery report per skill (FR-30)
+      parameters:
+        - { name: goalId, in: query, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Report
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  masteredSkills: { type: integer }
+                  totalSkills: { type: integer }
+                  skills: { type: array, items: { $ref: '#/components/schemas/SkillMastery' } }
+
+  /friends:
+    get:
+      tags: [Social]
+      summary: List friends and pending requests (FR-31)
+      responses:
+        '200': { description: Friend list }
+    post:
+      tags: [Social]
+      summary: Send, accept or block (FR-31)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userHandle, action]
+              properties:
+                userHandle: { type: string }
+                action: { type: string, enum: [request, accept, block, remove] }
+      responses:
+        '200': { description: Friendship updated }
+
+  /feed:
+    get:
+      tags: [Social]
+      summary: Friends' and groups' events visible to the user (FR-32)
+      parameters:
+        - { name: cursor, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: Page of events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items: { type: array, items: { $ref: '#/components/schemas/FeedEvent' } }
+                  nextCursor: { type: [string, 'null'] }
+
+  /shares:
+    post:
+      tags: [Social]
+      summary: Share a unit or video with friends or a group (FR-33)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [targetType, targetId, audience]
+              properties:
+                targetType: { type: string, enum: [unit, video] }
+                targetId: { type: string, format: uuid }
+                audience: { type: string, enum: [friends, group] }
+                groupId: { type: string, format: uuid }
+                message: { type: string, maxLength: 500 }
+      responses:
+        '201': { description: Shared }
+
+  /feed/{eventId}/comments:
+    post:
+      tags: [Social]
+      summary: Comment on a feed event (FR-33)
+      parameters:
+        - { name: eventId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text]
+              properties:
+                text: { type: string, maxLength: 500 }
+      responses:
+        '201': { description: Comment created }
+
+  /groups:
+    post:
+      tags: [Social]
+      summary: Create a study group with a shared goal and weekly target (FR-34)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, goalTitle, weeklyTarget]
+              properties:
+                name: { type: string, maxLength: 80 }
+                goalTitle: { type: string, maxLength: 200 }
+                weeklyTarget: { type: integer, minimum: 1, maximum: 500 }
+      responses:
+        '201': { description: Group created with invite link }
+
+  /groups/{groupId}:
+    get:
+      tags: [Social]
+      summary: Group progress toward the cooperative target (FR-34)
+      parameters:
+        - { name: groupId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: Group
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Group' }
+
+  /reports:
+    post:
+      tags: [Moderation]
+      summary: Report content (FR-35)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [targetType, targetId, reason]
+              properties:
+                targetType: { type: string, enum: [video, question, unit, feedback, comment] }
+                targetId: { type: string, format: uuid }
+                reason: { type: string, maxLength: 1000 }
+      responses:
+        '201': { description: Report stored }
+
+  /moderation/queue:
+    get:
+      tags: [Moderation]
+      summary: Open reports and needs_review items (moderator role) (FR-36)
+      responses:
+        '200': { description: Queue }
+        '403': { description: Not a moderator }
+
+  /moderation/items/{itemId}:
+    post:
+      tags: [Moderation]
+      summary: Hide, verify or reject an item; action is logged (FR-36)
+      parameters:
+        - { name: itemId, in: path, required: true, schema: { type: string, format: uuid } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action: { type: string, enum: [hide, verify, reject] }
+                note: { type: string, maxLength: 1000 }
+      responses:
+        '200': { description: Done }
+        '403': { description: Not a moderator }
+
+  /integrations/lms:
+    put:
+      tags: [Integrations]
+      summary: Validate and store the personal Moodle iCalendar URL (FR-17)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [icalUrl]
+              properties:
+                icalUrl: { type: string, format: uri }
+      responses:
+        '200': { description: Connected; first refresh started }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+    delete:
+      tags: [Integrations]
+      summary: Disconnect and delete the stored URL (FR-17)
+      responses:
+        '204': { description: Disconnected }
+
+  /consents:
+    put:
+      tags: [Privacy]
+      summary: Grant or withdraw learning-analytics consent (FR-03)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [purpose, granted, policyVersion]
+              properties:
+                purpose: { type: string, enum: [analytics, push] }
+                granted: { type: boolean }
+                policyVersion: { type: string }
+      responses:
+        '200': { description: Stored }
+
+  /account/export:
+    get:
+      tags: [Privacy]
+      summary: Download all personal data as JSON (FR-04)
+      responses:
+        '200': { description: Export file, content: { application/json: { schema: { type: object } } } }
+
+  /account:
+    delete:
+      tags: [Privacy]
+      summary: Delete the account and all user-owned data and media (FR-04)
+      responses:
+        '204': { description: Deleted }
+
+components:
+  parameters:
+    GoalId: { name: goalId, in: path, required: true, schema: { type: string, format: uuid } }
+    UnitId: { name: unitId, in: path, required: true, schema: { type: string, format: uuid } }
+    QuizId: { name: quizId, in: path, required: true, schema: { type: string, format: uuid } }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Client-generated UUID; repeated requests with the same key return the first result.
+      schema: { type: string, format: uuid }
+
+  responses:
+    TooLarge:
+      description: Material exceeds 20,000 characters or 10 MB
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    Unprocessable:
+      description: Valid request that cannot be processed
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    TooManyRequests:
+      description: Per-user or global generation limit reached
+      headers:
+        Retry-After: { schema: { type: integer } }
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+    AiUnavailable:
+      description: AI provider failed or timed out; no substitute output is produced
+      content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } }
+
+  schemas:
+    Problem:
+      type: object
+      required: [type, title, status]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        requestId: { type: string }
+
+    Job:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        kind: { type: string, enum: [skill_map, units, questions, video] }
+        status: { type: string, enum: [queued, running, succeeded, failed, needs_review] }
+        attempts: { type: integer }
+        error: { type: [string, 'null'] }
+
+    GoalInput:
+      type: object
+      required: [title, dailyBudgetMin]
+      properties:
+        title: { type: string, maxLength: 200 }
+        subject: { type: string, maxLength: 120 }
+        level: { type: integer, minimum: 1, maximum: 3 }
+        dailyBudgetMin: { type: integer, minimum: 5, maximum: 60 }
+        deadline: { type: string, format: date }
+        material: { type: string, maxLength: 20000, description: Treated as untrusted data }
+
+    SkillNode:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        prerequisites: { type: array, items: { type: string, format: uuid } }
+        state: { type: string, enum: [mastered, current, review_due, available, locked] }
+        mastery: { type: number, minimum: 0, maximum: 1, description: Predicted success on a typical item of the skill (Elo) }
+    Path:
+      type: object
+      properties:
+        goalId: { type: string, format: uuid }
+        skills: { type: array, items: { $ref: '#/components/schemas/SkillNode' } }
+        pathway:
+          type: array
+          description: Ordered eligible units
+          items:
+            type: object
+            properties:
+              unitId: { type: string, format: uuid }
+              title: { type: string }
+              minutes: { type: integer }
+              priority: { type: number }
+
+    PlanItem:
+      type: object
+      required: [id, kind, title, minutes, reason]
+      properties:
+        id: { type: string, format: uuid }
+        kind: { type: string, enum: [unit, review, lms_deadline, manual] }
+        unitId: { type: [string, 'null'], format: uuid }
+        title: { type: string }
+        start: { type: string, format: date-time }
+        minutes: { type: integer }
+        reason: { type: string, description: Generated from the strongest priority factor }
+        breakdown:
+          type: object
+          properties:
+            gap: { type: number }
+            goalRelevance: { type: number }
+            reviewDue: { type: number }
+            deadlineProximity: { type: number }
+
+    MicroUnit:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        version: { type: integer }
+        objective: { type: string }
+        body: { type: string }
+        minutes: { type: integer }
+        skills: { type: array, items: { type: string } }
+        sources: { type: array, items: { type: object, properties: { page: { type: integer }, excerpt: { type: string } } } }
+        video: { $ref: '#/components/schemas/Video' }
+
+    Video:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        unitId: { type: string, format: uuid }
+        language: { type: string, enum: [en, ru, kk] }
+        status: { type: string, enum: [queued, running, succeeded, failed, needs_review] }
+        durationSec: { type: [integer, 'null'] }
+        mediaUrl: { type: [string, 'null'], format: uri, description: Signed, expiring }
+        captionsUrl: { type: [string, 'null'], format: uri, description: WebVTT, signed }
+        transcript: { type: [string, 'null'] }
+        sources: { type: array, items: { type: object, properties: { sentence: { type: integer }, sourceSpan: { type: string } } } }
+
+    QuestionView:
+      type: object
+      required: [questionId, kind, stem]
+      properties:
+        questionId: { type: string, format: uuid }
+        kind: { type: string, enum: [mcq, short, code] }
+        stem: { type: string }
+        options: { type: array, items: { type: object, properties: { id: { type: string }, text: { type: string } } } }
+        position: { type: integer }
+        maxItems: { type: integer }
+    QuizSummary:
+      type: object
+      properties:
+        finished: { type: boolean, const: true }
+        itemsUsed: { type: integer }
+        skills: { type: array, items: { $ref: '#/components/schemas/SkillMastery' } }
+
+    AnswerResult:
+      type: object
+      required: [correct, explanation, mastery]
+      properties:
+        correct: { type: boolean }
+        score: { type: [integer, 'null'], minimum: 0, maximum: 100, description: For open answers }
+        explanation: { type: string }
+        strengths: { type: array, items: { type: string } }
+        improvement: { type: [string, 'null'] }
+        mastery: { $ref: '#/components/schemas/SkillMastery' }
+        reward:
+          type: [object, 'null']
+          properties:
+            xp: { type: integer }
+            coins: { type: integer }
+            alreadyGranted: { type: boolean }
+
+    SkillMastery:
+      type: object
+      properties:
+        skillId: { type: string, format: uuid }
+        name: { type: string }
+        before: { type: number }
+        mastery: { type: number, minimum: 0, maximum: 1, description: Predicted success on a typical item of the skill (Elo) }
+        mastered: { type: boolean }
+        reviewDueAt: { type: [string, 'null'], format: date-time }
+
+    FeedEvent:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        actor: { type: object, properties: { handle: { type: string }, displayName: { type: string } } }
+        type: { type: string, enum: [unit_done, mastery_up, shared, group_goal] }
+        title: { type: string }
+        visibility: { type: string, enum: [friends, group] }
+        likes: { type: integer }
+        comments: { type: integer }
+        createdAt: { type: string, format: date-time }
+
+    Group:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        goalTitle: { type: string }
+        weeklyTarget: { type: integer }
+        weeklyDone: { type: integer }
+        members: { type: integer }
+        showRanking: { type: boolean, default: false }

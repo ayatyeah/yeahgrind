@@ -1,0 +1,14 @@
+{
+  "freeMinutes": 40,
+  "plannedMinutes": 28,
+  "items": [
+    { "id": "4f1d…a1", "kind": "unit", "unitId": "u-ljoin-1", "title": "LEFT JOIN — keep all rows", "start": "2026-11-03T13:30:00Z", "minutes": 10,
+      "reason": "Quiz in Databases on Fri · next step after INNER JOIN",
+      "breakdown": { "gap": 0.38, "goalRelevance": 0.9, "reviewDue": 0, "deadlineProximity": 0.79 } },
+    { "id": "4f1d…a2", "kind": "review", "unitId": "u-order-1", "title": "Review: ORDER BY", "start": "2026-11-03T13:45:00Z", "minutes": 6,
+      "reason": "Review due today (7-day interval)",
+      "breakdown": { "gap": 0.14, "goalRelevance": 0.5, "reviewDue": 1, "deadlineProximity": 0.79 } },
+    { "id": "4f1d…a3", "kind": "lms_deadline", "unitId": null, "title": "Deadline: Lab 3 — Indexes", "start": "2026-11-03T09:00:00Z", "minutes": 0,
+      "reason": "From your Moodle calendar" }
+  ]
+}

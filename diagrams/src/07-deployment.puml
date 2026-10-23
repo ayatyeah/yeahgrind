@@ -1,0 +1,40 @@
+@startuml 07-deployment
+!pragma layout smetana
+skinparam shadowing false
+skinparam defaultFontSize 12
+title YeahGrind — Deployment View (target)
+
+node "Student device" {
+  artifact "Browser / installed PWA\n(video player & recorder)" as PWA
+}
+
+cloud "Railway project (private network)" {
+  node "Web service" {
+    artifact "Next.js app\n(UI + REST API + domain modules;\nbackground jobs after the response)" as APP
+  }
+  database "PostgreSQL 18\n(data, job rows, narration audio,\ndaily backups)" as PG
+}
+
+node "GitHub" {
+  artifact "Repository + Actions CI\n(lint, typecheck, tests, build)" as CI
+  artifact "Scheduled workflows\n(LMS refresh 3×/day, reminders)" as SCHED
+}
+
+cloud "External APIs" {
+  [LLM provider] as LLM
+  [Gemini TTS] as TTS
+  [Microsoft Entra ID] as ENTRA
+  [Moodle LMS] as MOODLE
+  [Web Push services] as PUSH
+}
+
+PWA --> APP : HTTPS (API, narration with range requests)
+APP --> PG : private network
+APP --> LLM : generation, grading
+APP --> TTS : narration
+APP --> MOODLE : iCalendar
+APP --> PUSH : Web Push
+APP --> ENTRA : OIDC
+SCHED --> APP : protected job endpoints
+CI --> APP : deploy on merge to main
+@enduml

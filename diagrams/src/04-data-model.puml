@@ -1,0 +1,216 @@
+@startuml 04-data-model
+!pragma layout smetana
+hide circle
+skinparam linetype ortho
+skinparam shadowing false
+skinparam defaultFontSize 11
+title YeahGrind — Logical Data Model (draft)
+
+entity User {
+  * id : uuid
+  --
+  email : text <<unique>>
+  passwordHash : text
+  locale : en | ru | kk
+  timeZone : text
+  dailyBudgetMin : int
+  ability : float  // global Elo prior
+}
+entity Goal {
+  * id : uuid
+  --
+  userId : uuid <<FK>>
+  title : text
+  subject : text
+  level : int
+  deadline : date
+}
+entity SourceMaterial {
+  * id : uuid
+  --
+  goalId : uuid <<FK>>
+  text : text
+  checksum : text
+}
+entity Skill {
+  * id : uuid
+  --
+  goalId : uuid <<FK>>
+  name : text
+  description : text
+}
+entity SkillPrereq {
+  * skillId : uuid <<FK>>
+  * requiresId : uuid <<FK>>
+}
+entity MicroUnit {
+  * id : uuid
+  --
+  goalId : uuid <<FK>>
+  objective : text
+  body : text
+  minutes : int
+  sourceSpan : int4range
+  version : int
+}
+entity UnitSkill {
+  * unitId : uuid <<FK>>
+  * skillId : uuid <<FK>>
+}
+entity Video {
+  * id : uuid
+  --
+  unitId : uuid <<FK>>
+  unitVersion : int
+  language : en | ru | kk
+  status : queued | running | succeeded | failed | needs_review
+  script : json (scenes, sentences, timings)
+  narration : bytea (WAV)
+  issues : text[]
+  attempts : int
+  startedAt : timestamp (claim)
+  durationSec : int
+  <<unique (unitId, unitVersion, language)>>
+}
+entity Question {
+  * id : uuid
+  --
+  skillId : uuid <<FK>>
+  kind : mcq | short | code
+  stem : text
+  options : jsonb
+  answerKey : jsonb <<server only>>
+  rubric : jsonb <<server only>>
+  difficulty : float  // Elo b
+  answers : int
+  status : draft | validated | rejected
+}
+entity Attempt {
+  * id : uuid
+  --
+  userId : uuid <<FK>>
+  questionId : uuid <<FK>>
+  idempotencyKey : text <<unique>>
+  correct : boolean
+  score : int
+  responseMs : int
+  at : timestamptz
+}
+entity Mastery {
+  * userId : uuid <<FK>>
+  * skillId : uuid <<FK>>
+  --
+  theta : float  // Elo ability for the skill
+  answers : int
+  mastery : float  // σ(theta − b_typical)
+  reviewDueAt : timestamptz
+}
+entity PlanItem {
+  * id : uuid
+  --
+  userId : uuid <<FK>>
+  unitId : uuid <<FK>>
+  start : timestamptz
+  minutes : int
+  source : pathway | review | manual | lms
+  reason : text
+  doneAt : timestamptz
+}
+entity CheckIn {
+  * userId : uuid <<FK>>
+  * day : date
+  --
+  energy : 1..5
+  freeMinutes : int
+}
+entity CalendarConnection {
+  * userId : uuid <<FK>>
+  --
+  urlEncrypted : bytea
+  lastSyncAt : timestamptz
+}
+entity Friendship {
+  * userId : uuid <<FK>>
+  * friendId : uuid <<FK>>
+  --
+  status : pending | accepted | blocked
+}
+entity FeedEvent {
+  * id : uuid
+  --
+  userId : uuid <<FK>>
+  type : unit_done | mastery_up | shared | group_goal
+  refId : uuid
+  visibility : private | friends | group
+}
+entity Comment {
+  * id : uuid
+  --
+  eventId : uuid <<FK>>
+  userId : uuid <<FK>>
+  text : varchar(500)
+}
+entity StudyGroup {
+  * id : uuid
+  --
+  name : text
+  goalTitle : text
+  weeklyTarget : int
+}
+entity GroupMember {
+  * groupId : uuid <<FK>>
+  * userId : uuid <<FK>>
+}
+entity Report {
+  * id : uuid
+  --
+  reporterId : uuid <<FK>>
+  targetType : video | question | unit | comment
+  targetId : uuid
+  status : open | resolved
+}
+entity RewardLedger {
+  * id : uuid
+  --
+  userId : uuid <<FK>>
+  reason : text
+  sourceId : uuid
+  xp : int
+  coins : int
+  <<unique (userId, reason, sourceId)>>
+}
+entity ConsentRecord {
+  * id : uuid
+  --
+  userId : uuid <<FK>>
+  purpose : text
+  policyVersion : text
+  granted : boolean
+}
+
+User ||--o{ Goal
+Goal ||--o| SourceMaterial
+Goal ||--|{ Skill
+Skill ||--o{ SkillPrereq
+Goal ||--|{ MicroUnit
+MicroUnit ||--|{ UnitSkill
+Skill ||--o{ UnitSkill
+MicroUnit ||--o{ Video
+Skill ||--o{ Question
+Question ||--o{ Attempt
+User ||--o{ Attempt
+User ||--o{ Mastery
+Skill ||--o{ Mastery
+User ||--o{ PlanItem
+MicroUnit |o--o{ PlanItem
+User ||--o{ CheckIn
+User ||--o| CalendarConnection
+User ||--o{ Friendship
+User ||--o{ FeedEvent
+FeedEvent ||--o{ Comment
+StudyGroup ||--|{ GroupMember
+User ||--o{ GroupMember
+User ||--o{ Report
+User ||--o{ RewardLedger
+User ||--o{ ConsentRecord
+@enduml
