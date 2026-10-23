@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YeahGrind Prototype</title>
+<style>
+  :root {
+    --bg: #f5f5f5; --surface: #fff; --surface-2: #f1f2f3; --fg: #141416; --dim: #505256; --muted: #66686d;
+    --border: #e9eaec; --border-strong: #d3d5d8; --accent: #141416; --on-accent: #fff;
+    --strength: #8d5c51; --intellect: #171719; --capital: #776d59; --stability: #5e7565; --ok: #2f6b45; --warn: #8a5a12;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header.page { max-width: 1280px; margin: 0 auto; padding: 28px 16px 8px; }
+  header.page h1 { margin: 0 0 6px; font-size: 24px; letter-spacing: -0.01em; }
+  header.page p { margin: 0; color: var(--dim); max-width: 860px; }
+  nav.flows { max-width: 1280px; margin: 14px auto 0; padding: 0 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+  nav.flows a { text-decoration: none; color: var(--fg); background: var(--surface); border: 1px solid var(--border-strong); border-radius: 999px; padding: 6px 12px; font-size: 13px; }
+  main { max-width: 1280px; margin: 0 auto; padding: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px 20px; }
+  figure { margin: 0; }
+  figcaption { font-size: 13px; color: var(--dim); margin: 10px 4px 0; }
+  figcaption b { color: var(--fg); }
+  .phone { width: 340px; height: 700px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 36px; overflow: hidden; position: relative; display: flex; flex-direction: column; box-shadow: 0 1px 0 rgba(0,0,0,.03); scroll-margin-top: 16px; }
+  .phone:target { outline: 3px solid var(--fg); outline-offset: 4px; }
+  .status { height: 34px; display: flex; justify-content: space-between; align-items: center; padding: 0 22px; font-size: 12px; font-weight: 600; flex: none; }
+  .screen { flex: 1; overflow: hidden; padding: 6px 18px 12px; display: flex; flex-direction: column; gap: 12px; }
+  .tabbar { flex: none; height: 62px; border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(5, 1fr); font-size: 10.5px; color: var(--muted); text-align: center; align-items: center; }
+  .tabbar span.on { color: var(--fg); font-weight: 700; }
+  .tabbar i { display: block; width: 18px; height: 18px; margin: 0 auto 3px; border: 1.6px solid currentColor; border-radius: 6px; }
+  .brand { font-weight: 800; letter-spacing: -0.02em; font-size: 17px; }
+  h2 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
+  h3 { font-size: 14px; margin: 0; }
+  .sub { color: var(--dim); font-size: 13px; margin: 0; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px; }
+  .soft { background: var(--surface-2); border-color: transparent; }
+  .row { display: flex; gap: 8px; align-items: center; }
+  .between { justify-content: space-between; }
+  .wrap { flex-wrap: wrap; }
+  .chip { border: 1px solid var(--border-strong); border-radius: 999px; padding: 6px 10px; font-size: 12.5px; background: var(--surface); }
+  .chip.on { background: var(--fg); color: var(--on-accent); border-color: var(--fg); }
+  .seg { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .seg div { border: 1px solid var(--border-strong); border-radius: 12px; text-align: center; padding: 8px 0; font-size: 12px; }
+  .seg div.on { background: var(--fg); color: var(--on-accent); border-color: var(--fg); }
+  .btn { display: block; text-align: center; text-decoration: none; border-radius: 14px; padding: 12px; font-weight: 650; font-size: 14px; border: 1px solid var(--fg); color: var(--fg); background: var(--surface); }
+  .btn.primary { background: var(--fg); color: var(--on-accent); }
+  .btn.ghost { border-color: transparent; color: var(--dim); font-weight: 500; padding: 6px; }
+  .spacer { flex: 1; }
+  .tag { font-size: 11px; color: var(--dim); border: 1px solid var(--border); border-radius: 6px; padding: 2px 6px; }
+  .tag.lms { border-color: #b9c4d6; color: #3c4f6e; }
+  .tag.ai { border-color: #c8bfd3; color: #5a4a6e; }
+  .tag.rec { border-color: #c7d3c8; color: #3f5a45; }
+  .tag.quest { border-color: #d9c9bd; color: #6b4b39; }
+  .bar { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+  .bar > b { display: block; height: 100%; background: var(--fg); border-radius: 99px; }
+  .muted { color: var(--muted); }
+  .small { font-size: 12px; }
+  .deck { position: relative; height: 392px; }
+  .deck .card { position: absolute; inset: 0; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .deck .back1 { transform: translateY(14px) scale(.95); opacity: .55; }
+  .deck .back2 { transform: translateY(26px) scale(.9); opacity: .3; }
+  .why { background: var(--surface-2); border-radius: 12px; padding: 10px; font-size: 12.5px; }
+  .factor { display: grid; grid-template-columns: 78px 1fr 34px; gap: 8px; align-items: center; font-size: 11.5px; color: var(--dim); }
+  .timeline { display: flex; flex-direction: column; gap: 8px; }
+  .slot { display: grid; grid-template-columns: 44px 1fr; gap: 8px; }
+  .slot time { font-size: 12px; color: var(--muted); padding-top: 10px; }
+  .slot .card { padding: 10px 12px; }
+  .check { width: 18px; height: 18px; border: 1.6px solid var(--border-strong); border-radius: 6px; flex: none; }
+  .check.done { background: var(--fg); border-color: var(--fg); position: relative; }
+  .check.done::after { content: ""; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  table.preview { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.preview td, table.preview th { border-bottom: 1px solid var(--border); padding: 6px 4px; text-align: left; }
+  table.preview th { color: var(--muted); font-weight: 600; }
+  .shot { height: 92px; border-radius: 12px; background: repeating-linear-gradient(0deg, var(--surface-2) 0 14px, #fff 14px 16px), var(--surface-2); border: 1px dashed var(--border-strong); display: grid; place-items: center; color: var(--muted); font-size: 12px; }
+  .route { display: flex; align-items: center; gap: 4px; }
+  .node { width: 30px; height: 30px; border-radius: 50%; border: 1.6px solid var(--border-strong); display: grid; place-items: center; font-size: 12px; font-weight: 700; }
+  .node.done { background: var(--fg); color: #fff; border-color: var(--fg); }
+  .node.cur { border-color: var(--fg); border-width: 2.5px; }
+  .node.boss { border-radius: 9px; }
+  .link { flex: 1; height: 2px; background: var(--border-strong); }
+  .link.done { background: var(--fg); }
+  textarea { width: 100%; height: 96px; border: 1px solid var(--border-strong); border-radius: 12px; padding: 10px; font: 12.5px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; resize: none; color: var(--fg); background: var(--surface); }
+  .score { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+  .pill { display: inline-block; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 650; }
+  .pill.ok { background: #e3efe6; color: var(--ok); }
+  .avatar { height: 112px; display: grid; place-items: center; background: var(--surface-2); border-radius: 18px; }
+  .stat { display: grid; grid-template-columns: 82px 1fr 30px; gap: 8px; align-items: center; font-size: 12px; }
+  .toggle { width: 38px; height: 22px; border-radius: 99px; background: var(--border-strong); position: relative; flex: none; }
+  .toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; }
+  .toggle.on { background: var(--fg); }
+  .toggle.on::after { left: 19px; }
+  .list .item { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .list .item:last-child { border-bottom: 0; }
+  .desk { width: 100%; max-width: 760px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .desk .top { height: 40px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 14px; gap: 8px; font-size: 12px; color: var(--muted); }
+  .desk .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border-strong); }
+  .wide { grid-column: 1 / -1; }
+  .week { display: grid; grid-template-columns: 30px repeat(5, 1fr); gap: 3px; font-size: 10.5px; }
+  .week .h { text-align: center; color: var(--muted); font-weight: 600; }
+  .week .t { color: var(--muted); }
+  .ev { border-radius: 6px; padding: 3px 4px; background: var(--surface-2); min-height: 26px; }
+  .ev.dl { background: #e7ecf4; }
+  .ev.q { background: #f1e9e2; }
+  .ev.r { background: #e5eee6; }
+  footer { max-width: 1280px; margin: 0 auto; padding: 8px 16px 40px; color: var(--muted); font-size: 12.5px; }
+  @media (max-width: 380px) { .phone { width: 100%; } main { grid-template-columns: 1fr; } }
+
+  .video { position: relative; height: 176px; border-radius: 16px; background: #1c1c1e; color: #f5f5f5; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 12px; }
+  .video .slide { font-size: 15px; font-weight: 700; line-height: 1.25; }
+  .video .slide small { display: block; font-weight: 400; font-size: 11.5px; color: #b9bbbe; margin-top: 4px; }
+  .video .cap { align-self: center; background: rgba(0,0,0,.65); border-radius: 6px; padding: 3px 8px; font-size: 11.5px; }
+  .video .ctrl { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #d4d6d8; }
+  .video .prog { flex: 1; height: 3px; background: #49494d; border-radius: 2px; }
+  .video .prog b { display: block; width: 42%; height: 100%; background: #fff; border-radius: 2px; }
+  .opt { border: 1px solid var(--border-strong); border-radius: 12px; padding: 10px 12px; font-size: 13px; }
+  .opt.sel { border-color: var(--fg); border-width: 2px; }
+  .map { position: relative; height: 230px; }
+  .map svg { position: absolute; inset: 0; }
+  .sk { position: absolute; transform: translate(-50%,-50%); border: 1.6px solid var(--border-strong); background: var(--surface); border-radius: 10px; padding: 4px 8px; font-size: 11px; white-space: nowrap; }
+  .sk.done { background: var(--fg); color: #fff; border-color: var(--fg); }
+  .sk.cur { border-color: var(--fg); border-width: 2.5px; font-weight: 700; }
+  .sk.lock { color: var(--muted); border-style: dashed; }
+  .sk.rev { border-color: #8a5a12; color: #8a5a12; }
+  .avatar-s { width: 28px; height: 28px; border-radius: 50%; background: var(--surface-2); display: grid; place-items: center; font-size: 11px; font-weight: 700; flex: none; }
+  .feed .ev2 { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12.5px; }
+  .feed .ev2:last-child { border-bottom: 0; }
+  .ring { width: 92px; height: 92px; border-radius: 50%; background: conic-gradient(var(--fg) 0 64%, var(--surface-2) 64% 100%); display: grid; place-items: center; flex: none; }
+  .ring span { width: 70px; height: 70px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; font-weight: 800; font-size: 18px; }
+  .unitrow { display: grid; grid-template-columns: 36px 1fr; gap: 10px; align-items: start; }
+  .unitrow .min { font-size: 11px; color: var(--muted); text-align: center; border: 1px solid var(--border); border-radius: 10px; padding: 6px 0; }
+</style>
+</head>
+<body>
+<header class="page">
+  <h1>YeahGrind — UX prototype</h1>
+  <p>Mid-fidelity mockups of the key scenarios for pre-defense 1: a personalized microlearning pathway, generated short videos, adaptive assessment and social learning. Screens are 390 × 800 phone frames, scaled down; primary buttons follow the scenario. Persona: Aigerim, a 2nd-year student preparing for a Databases quiz on Friday.</p>
+</header>
+<nav class="flows" aria-label="Scenarios">
+  <a href="#p1">S1 Goal → skill map → path</a>
+  <a href="#p3">S2 Check-in → today's micro-plan</a>
+  <a href="#p4">S3 Micro-unit with generated video</a>
+  <a href="#p5">S4 Adaptive quiz → mastery</a>
+  <a href="#p7">S5 Friends &amp; study group</a>
+  <a href="#p9">S6 Privacy &amp; settings</a>
+  <a href="#p10">Moderation</a>
+</nav>
+
+<main>
+<figure>
+  <div class="phone" id="p1">
+    <div class="status"><span>19:40</span><span>●●● 5G</span></div>
+    <div class="screen">
+      <div class="row between"><span class="brand">YeahGrind</span><span class="muted small">New goal</span></div>
+      <h2>What do you want to learn?</h2>
+      <div class="card"><h3>Subject</h3><div class="row wrap" style="margin-top:8px"><span class="chip on">Databases</span><span class="chip">Algorithms</span><span class="chip">Physics</span><span class="chip">+ other</span></div><p class="small muted" style="margin:8px 0 0">From your Moodle calendar</p></div>
+      <div class="card"><h3>Goal</h3><p class="sub" style="margin-top:4px">Pass the SQL quiz: JOINs, GROUP BY, subqueries</p><div class="row between small" style="margin-top:8px"><span>Level</span><div class="row"><span class="chip">New</span><span class="chip on">Some basics</span><span class="chip">Confident</span></div></div></div>
+      <div class="card"><div class="row between"><h3>Daily time</h3><b>25 min</b></div><div class="bar" style="margin-top:10px"><b style="width:40%"></b></div><div class="row between small muted" style="margin-top:4px"><span>5</span><span>60 min</span></div></div>
+      <div class="card soft small"><b>Your material (optional)</b><br>lecture-5-joins.pdf · 14 pages · text extracted<br><span class="muted">Used as the source for units and videos. Treated as data only.</span></div>
+      <div class="spacer"></div>
+      <a class="btn primary" href="#p2">Build my path</a>
+    </div>
+    
+  </div>
+  <figcaption><b>P1 Goal &amp; material</b> · FR-05 – FR-07 · subject from LMS, level, daily time, own material.</figcaption>
+</figure>
+<figure>
+  <div class="phone" id="p2">
+    <div class="status"><span>19:41</span><span>●●● 5G</span></div>
+    <div class="screen">
+      <div class="row between"><h2>Your path</h2><span class="chip">12 units · 9 skills</span></div>
+      <p class="sub">Databases · SQL quiz on Fri. Placement test done: 3 skills already mastered.</p>
+      <div class="map">
+        <svg viewBox="0 0 300 230" width="100%" height="230" aria-hidden="true"><g stroke="#d3d5d8" stroke-width="2" fill="none"><path d="M60 30 L150 30"/><path d="M150 30 L240 30"/><path d="M150 30 L90 100"/><path d="M150 30 L210 100"/><path d="M90 100 L150 165"/><path d="M210 100 L150 165"/><path d="M150 165 L150 210"/></g></svg>
+        <span class="sk done" style="left:20%;top:13%">SELECT</span>
+        <span class="sk done" style="left:50%;top:13%">WHERE</span>
+        <span class="sk rev" style="left:80%;top:13%">ORDER BY · review</span>
+        <span class="sk cur" style="left:30%;top:44%">LEFT JOIN</span>
+        <span class="sk" style="left:70%;top:44%">GROUP BY</span>
+        <span class="sk lock" style="left:50%;top:72%">HAVING</span>
+        <span class="sk lock" style="left:50%;top:92%">Subqueries</span>
+      </div>
+      <div class="row wrap small"><span class="tag">■ mastered</span><span class="tag">▢ current</span><span class="tag" style="color:#8a5a12">review due</span><span class="tag">⋯ locked until prerequisites</span></div>
+      <div class="spacer"></div>
+      <a class="btn primary" href="#p3">See today's plan</a>
+    </div>
+    <div class="tabbar"><span><i></i>Today</span><span class="on"><i></i>Path</span><span><i></i>Learn</span><span><i></i>Friends</span><span><i></i>Me</span></div>
+  </div>
+  <figcaption><b>P2 Skill map &amp; pathway</b> · FR-08, FR-10, FR-11, FR-15 · prerequisites, mastery, review.</figcaption>
+</figure>
+<figure>
+  <div class="phone" id="p3">
+    <div class="status"><span>08:12</span><span>●●● 5G</span></div>
+    <div class="screen">
+      <div class="row between"><h2>Today</h2><span class="muted small">Tue, 3 Nov</span></div>
+      <div class="card soft"><div class="row between"><span class="small">Energy <b>3</b> · Free time <b>40 min</b></span><a class="small" href="#p3" style="color:inherit">edit</a></div></div>
+      <div class="unitrow"><div class="min">10<br>min</div><div class="card"><div class="row between"><b>LEFT JOIN — keep all rows</b><span class="tag rec">unit</span></div><span class="small muted">Why: quiz in Databases on Fri · next step after INNER JOIN</span></div></div>
+      <div class="unitrow"><div class="min">6<br>min</div><div class="card"><div class="row between"><b>Review: ORDER BY</b><span class="tag" style="color:#8a5a12;border-color:#e2cfb2">review</span></div><span class="small muted">Why: review due today (7-day interval)</span></div></div>
+      <div class="unitrow"><div class="min">12<br>min</div><div class="card"><div class="row between"><b>GROUP BY basics</b><span class="tag rec">unit</span></div><span class="small muted">Why: unlocks HAVING · 2nd most important for the quiz</span></div></div>
+      <div class="unitrow"><div class="min">14:00</div><div class="card soft"><div class="row between"><b>Deadline: Lab 3 — Indexes</b><span class="tag lms">LMS</span></div></div></div>
+      <p class="small muted" style="margin:0">28 of 40 min planned · placed in your free slots</p>
+      <div class="spacer"></div>
+      <a class="btn primary" href="#p4">Start: LEFT JOIN</a>
+    </div>
+    <div class="tabbar"><span class="on"><i></i>Today</span><span><i></i>Path</span><span><i></i>Learn</span><span><i></i>Friends</span><span><i></i>Me</span></div>
+  </div>
+  <figcaption><b>P3 Check-in &amp; micro-plan</b> · FR-12 – FR-16 · fits free minutes and deadlines; reason per unit.</figcaption>
+</figure>
+<figure>
+  <div class="phone" id="p4">
+    <div class="status"><span>18:31</span><span>●●● 5G</span></div>
+    <div class="screen">
+      <div><span class="small muted">Unit 4 of 12 · 10 min</span><h2>LEFT JOIN — keep all rows</h2></div>
+      <div class="video" aria-label="Video player">
+        <div class="slide">LEFT JOIN<small>All rows from the left table + matches from the right. No match → NULL.</small></div>
+        <div class="cap">…students without grades still appear, with NULL in score.</div>
+        <div class="ctrl"><span>▶</span><span>0:38</span><div class="prog"><b></b></div><span>1:30</span><span>CC</span><span>1.25×</span></div>
+      </div>
+      <div class="row wrap small"><span class="chip on">Captions</span><span class="chip">Transcript</span><span class="chip">Sources (3)</span><span class="chip">RU narration</span></div>
+      <div class="card soft small"><b>Sources</b> · lecture-5-joins.pdf p. 6–7. Every sentence of the script is linked to your material.</div>
+      <div class="card small"><b>Key idea</b><br><code>FROM students s LEFT JOIN grades g ON g.student_id = s.id</code> keeps every student.</div>
+      <div class="row small" style="gap:6px"><span>♡ 12</span><span class="muted">·</span><a href="#p7" style="color:inherit">Share with DB squad</a><span class="spacer"></span><a href="#p10" style="color:var(--muted)">Report</a></div>
+      <div class="spacer"></div>
+      <a class="btn primary" href="#p5">Check yourself · adaptive quiz</a>
+    </div>
+    <div class="tabbar"><span><i></i>Today</span><span><i></i>Path</span><span class="on"><i></i>Learn</span><span><i></i>Friends</span><span><i></i>Me</span></div>
+  </div>
+  <figcaption><b>P4 Micro-unit with generated video</b> · FR-19 – FR-24 · captions, transcript, sources, sharing, report.</figcaption>
+</figure>
+<figure>
+  <div class="phone" id="p5">
+    <div class="status"><span>18:42</span><span>●●● 5G</span></div>
+    <div class="screen">
+      <div class="row between"><span class="small muted">Quiz · LEFT JOIN</span><span class="small muted">Question 3 · max 10</span></div>
+      <div class="bar"><b style="width:30%"></b></div>
+      <p class="small muted" style="margin:0">Questions adapt to your answers.</p>
+      <h3 style="font-size:16px">Table <code>students</code> has 50 rows; 8 students have no rows in <code>grades</code>, and <code>grades.score</code> is never NULL. How many rows does this query return?</h3>
+      <div class="card small" style="font-family:ui-monospace,monospace">SELECT s.id, g.score<br>FROM students s<br>LEFT JOIN grades g<br>&nbsp;&nbsp;ON g.student_id = s.id<br>WHERE g.score IS NULL;</div>
+      <div class="opt">A. 0</div>
+      <div class="opt sel">B. 8</div>
+      <div class="opt">C. 42</div>
+      <div class="opt">D. 50</div>
+      <div class="spacer"></div>
+      <div class="row" style="gap:10px"><a class="btn" style="flex:1" href="#p5">Hint 1 of 2</a><a class="btn primary" style="flex:1.4" href="#p5b">Answer</a></div>
+    </div>
+    <div class="tabbar"><span><i></i>Today</span><span><i></i>Path</span><span class="on"><i></i>Learn</span><span><i></i>Friends</span><span><i></i>Me</span></div>
+  </div>
+  <figcaption><b>P5 Adaptive quiz</b> · FR-25 – FR-27, FR-29 · item chosen near 70 % success; hints, no answer before attempt.</figcaption>
+</figure>
+<figure>
+  <div class="phone" id="p5b">
+    <div class="status"><span>18:44</span><span>●●● 5G</span></div>
+    <div class="screen">
+      <div class="row between"><span class="pill ok">Correct</span><span class="small muted">Question 4 next</span></div>
+      <div class="card"><b>Why</b><p class="sub" style="margin-top:4px">LEFT JOIN keeps every student; only the 8 students without grades get NULL in <code>score</code> (real scores are never NULL), so <code>WHERE g.score IS NULL</code> keeps exactly them.</p></div>
+      <div class="card soft"><div class="row between"><b>LEFT JOIN mastery</b><b>0.62 → 0.78</b></div><div class="bar" style="margin-top:8px"><b style="width:78%"></b></div><span class="small muted">Mastered at 0.85 · about 2 more questions</span></div>
+      <h3>Open question</h3>
+      <textarea>SELECT s.name, AVG(g.score) FROM students s LEFT JOIN grades g ON g.student_id = s.id GROUP BY s.name;</textarea>
+      <div class="card small"><b>AI feedback · 86/100</b><br>✓ LEFT JOIN keeps students without grades.<br>→ Grouping only by <code>name</code> merges two students with the same name — which column identifies a student?</div>
+      <div class="spacer"></div>
+      <a class="btn primary" href="#p6">Finish quiz</a>
+      <a class="btn ghost" href="#p10">Report a problem with this feedback</a>
+    </div>
+    <div class="tabbar"><span><i></i>Today</span><span><i></i>Path</span><span class="on"><i></i>Learn</span><span><i></i>Friends</span><span><i></i>Me</span></div>
+  </div>
+  <figcaption><b>P5b Feedback &amp; mastery update</b> · FR-27 – FR-29 · explanation, mastery change, AI feedback on open answer.</figcaption>
+</figure>
+<figure>
+  <div class="phone" id="p6">
+    <div class="status"><span>18:50</span><span>●●● 5G</span></div>
+    <div class="screen">
+      <h2>Mastery · Databases</h2>
+      <div class="row" style="gap:14px"><div class="ring"><span>64%</span></div><div class="small"><b>6 of 9 skills mastered</b><br><span class="muted">Ready for Friday's quiz: on track</span><br><span class="muted">Level 7 · +60 XP today</span></div></div>
+      <div class="stat"><span>LEFT JOIN</span><div class="bar"><b style="width:78%"></b></div><span>.78</span></div>
+      <div class="stat"><span>GROUP BY</span><div class="bar"><b style="width:35%"></b></div><span>.35</span></div>
+      <div class="stat"><span>HAVING</span><div class="bar"><b style="width:12%"></b></div><span>.12</span></div>
+      <div class="stat"><span>ORDER BY</span><div class="bar"><b style="width:91%"></b></div><span>.91</span></div>
+      <div class="card"><b>Weak areas first</b><p class="sub" style="margin-top:4px">GROUP BY → unit "GROUP BY basics" (12 min) is planned for today at 20:10.</p></div>
+      <div class="card soft small">Missed a day? Nothing is lost — progress never decreases.</div>
+      <div class="spacer"></div>
+      <a class="btn primary" href="#p7">See what friends are learning</a>
+    </div>
+    <div class="tabbar"><span><i></i>Today</span><span class="on"><i></i>Path</span><span><i></i>Learn</span><span><i></i>Friends</span><span><i></i>Me</span></div>
+  </div>
+  <figcaption><b>P6 Mastery report</b> · FR-30, FR-37, FR-38 · per-skill mastery, weak areas, next unit.</figcaption>
+</figure>
+<figure>
+  <div class="phone" id="p7">
+    <div class="status"><span>19:05</span><span>●●● 5G</span></div>
+    <div class="screen">
+      <div class="row between"><h2>Friends</h2><span class="chip">+ Add</span></div>
+      <div class="card feed">
+        <div class="ev2"><span class="avatar-s">D</span><div><b>Dana</b> mastered <b>GROUP BY</b> · 2 h<br><span class="muted">♡ 4 · 1 comment</span></div></div>
+        <div class="ev2"><span class="avatar-s">A</span><div><b>Arman</b> shared a video: <b>Indexes in 90 s</b><div class="video" style="height:84px;margin-top:6px;padding:8px"><div class="slide" style="font-size:12px">B-tree index<small>Why lookups get faster</small></div></div></div></div>
+        <div class="ev2"><span class="avatar-s">M</span><div><b>Madi</b> finished 3 units for <b>DB quiz squad</b> · 5 h</div></div>
+      </div>
+      <div class="card small"><b>Comment</b> on Arman's video<br><span class="muted">"The index slide finally made it click 👍"</span></div>
+      <p class="small muted" style="margin:0">Your quiz scores are private unless you share them.</p>
+      <div class="spacer"></div>
+      <a class="btn primary" href="#p8">Open DB quiz squad</a>
+    </div>
+    <div class="tabbar"><span><i></i>Today</span><span><i></i>Path</span><span><i></i>Learn</span><span class="on"><i></i>Friends</span><span><i></i>Me</span></div>
+  </div>
+  <figcaption><b>P7 Activity feed</b> · FR-31 – FR-33 · friends-only events, sharing, comments, private scores.</figcaption>
+</figure>
+<figure>
+  <div class="phone" id="p8">
+    <div class="status"><span>19:06</span><span>●●● 5G</span></div>
+    <div class="screen">
+      <div class="row between"><h2>DB quiz squad</h2><span class="small muted">4 members</span></div>
+      <div class="card"><b>Shared goal</b><p class="sub" style="margin-top:4px">Everyone ready for the SQL quiz on Friday</p><div class="row between small" style="margin-top:8px"><span>This week together</span><b>23 / 32 units</b></div><div class="bar" style="margin-top:6px"><b style="width:72%"></b></div></div>
+      <div class="card"><b>Cooperative challenge</b><p class="sub" style="margin-top:4px">If the group reaches 32 units by Thu 22:00, everyone gets the "Query crew" badge.</p></div>
+      <div class="card list small">
+        <div class="item"><span>Next group session</span><b>Wed 18:00 · GROUP BY</b></div>
+        <div class="item"><span>Shared videos</span><b>5</b></div>
+        <div class="item"><span>Ranking of members</span><span class="muted">hidden (group setting)</span></div>
+      </div>
+      <div class="spacer"></div>
+      <a class="btn" href="#p8">Invite with link</a>
+      <a class="btn primary" href="#p9">Settings</a>
+    </div>
+    <div class="tabbar"><span><i></i>Today</span><span><i></i>Path</span><span><i></i>Learn</span><span class="on"><i></i>Friends</span><span><i></i>Me</span></div>
+  </div>
+  <figcaption><b>P8 Study group</b> · FR-34 · shared goal, cooperative challenge, no individual ranking by default.</figcaption>
+</figure>
+<figure>
+  <div class="phone" id="p9">
+    <div class="status"><span>19:10</span><span>●●● 5G</span></div>
+    <div class="screen">
+      <h2>Privacy &amp; settings</h2>
+      <div class="card list">
+        <div class="item"><div><b>Learning analytics</b><br><span class="small muted">Used to tune your path and to evaluate the platform. Off until you agree.</span></div><span class="toggle"></span></div>
+        <div class="item"><div><b>What we send to AI services</b><br><span class="small muted">Unit text, your material and answers. Never your name, e-mail or account ID. Not used for training.</span></div></div>
+        <div class="item"><span>Default visibility of my progress</span><span class="chip">Friends</span></div>
+        <div class="item"><a href="#p9" style="color:inherit">Download my data (JSON)</a><span class="muted">›</span></div>
+        <div class="item"><a href="#p9" style="color:#9b2c2c">Delete account</a><span class="muted">›</span></div>
+      </div>
+      <div class="card list">
+        <div class="item"><span>Reminders · quiet hours</span><span class="chip">23:00 – 08:00</span></div>
+        <div class="item"><span>Language · video narration</span><div class="row"><span class="chip on">EN</span><span class="chip">RU</span><span class="chip">KK</span></div></div>
+        <div class="item"><span>Moodle calendar</span><span class="small muted">connected · 08:00</span></div>
+      </div>
+
+    </div>
+    <div class="tabbar"><span><i></i>Today</span><span><i></i>Path</span><span><i></i>Learn</span><span><i></i>Friends</span><span class="on"><i></i>Me</span></div>
+  </div>
+  <figcaption><b>P9 Privacy &amp; settings</b> · FR-03, FR-04, FR-17, FR-32, FR-39, FR-40 · consent off by default.</figcaption>
+</figure>
+<figure class="wide">
+  <div class="desk" id="p10">
+    <div class="top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span style="margin-left:10px">moderation · review queue</span></div>
+    <div class="screen" style="padding:16px 20px">
+      <div class="row between"><h2>Review queue</h2><div class="row"><span class="chip on">Open · 4</span><span class="chip">Resolved · 27</span></div></div>
+      <table class="preview">
+        <tr><th>Item</th><th>Reason</th><th>Details</th><th>Action</th></tr>
+        <tr><td>Video script · "Indexes" (RU)</td><td>needs_review</td><td>Sentence 4 not linked to any source span</td><td><span class="chip">Edit</span> <span class="chip">Reject</span></td></tr>
+        <tr><td>Question · GROUP BY #12</td><td>Student report</td><td>"Two options are correct (B and D)"</td><td><span class="chip">Fix key</span> <span class="chip">Reject</span></td></tr>
+        <tr><td>AI feedback · open answer</td><td>Student report</td><td>"Feedback says GROUP BY is missing but it is there"</td><td><span class="chip">Review</span></td></tr>
+        <tr><td>Comment on shared video</td><td>Student report</td><td>Off-topic advertising</td><td><span class="chip">Hide</span></td></tr>
+      </table>
+      <p class="small muted" style="margin:0">Opening an item shows the source span, generated output and history side by side. Rejected generated items are never served again; every action is logged (FR-35, FR-36).</p>
+    </div>
+  </div>
+  <figcaption><b>P10 Moderation queue</b> · FR-21, FR-35, FR-36 · scripts that failed validation and reported content.</figcaption>
+</figure>
+
+</main>
+<footer>YeahGrind · Development of an Intelligent Social Learning Platform with Personalized Microlearning Pathways, Short-Form Video Generation, and Adaptive Knowledge Assessment · AITU, SE-2425 · prototype for pre-defense 1 (24 October 2026).</footer>
+</body>
+</html>
