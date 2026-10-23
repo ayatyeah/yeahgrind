@@ -1,0 +1,33 @@
+# Dependencies and builds
+node_modules/
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Environment and secrets
+.env
+.env.*
+!config/.env.example
+*.pem
+*.key
+
+# Test and tool output
+playwright-report/
+test-results/
+.lighthouseci/
+
+# Research data that must never be committed
+docs/research/**/audio/
+*.m4a
+*.mp3
+*.wav
+
+# OS and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json

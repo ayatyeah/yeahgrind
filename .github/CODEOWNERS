@@ -1,0 +1,8 @@
+# Reviewer is requested automatically; replace with real GitHub usernames.
+/src/server/        @<yernar-github-username>
+/src/worker/        @<yernar-github-username>
+/src/adapters/      @<yernar-github-username>
+/src/web/           @<ayat-github-username>
+/docs/              @<yernar-github-username> @<ayat-github-username>
+/diagrams/          @<yernar-github-username>
+/prototype/         @<ayat-github-username>
