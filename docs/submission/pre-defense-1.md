@@ -5,7 +5,7 @@
 | Project | Development of an Intelligent Social Learning Platform with Personalized Microlearning Pathways, Short-Form Video Generation, and Adaptive Knowledge Assessment (YeahGrind) |
 | Team | Yernar Katyshev, Ayat Balmagambet (SE-2425) · Supervisor: Arstan Makatov |
 | Date | 24 October 2026 |
-| Repository | https://github.com/ayatyeah/yeahgrind (private; access for the supervisor and the committee by invitation) |
+| Repository | https://github.com/ayatyeah/yeahgrind (public; interview notes are shared with the supervisor and the committee on request) |
 | Tag | `pre-defense-1` |
 | YouTrack | Project YG; backlog of 56 tasks for import in [`project-management/youtrack-backlog.csv`](../../project-management/youtrack-backlog.csv) |
 

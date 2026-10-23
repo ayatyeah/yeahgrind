@@ -116,7 +116,7 @@ project-management/   YouTrack backlog import
 | Area | Status |
 |---|---|
 | Analysis and design (proposal, evidence, literature, comparisons, requirements, architecture, prototype, verification plan, plan and risks) | Complete for pre-defense 1, under review |
-| User interviews | Guide, consent and note template in [`docs/research/`](docs/research/); notes of interviews I-01 … I-03 in [`docs/research/interview-notes/`](docs/research/interview-notes/) (task YG-3) |
+| User interviews | Guide, consent and note template in [`docs/research/`](docs/research/); the notes of interviews I-01 … I-03 are kept outside the public repository, as promised in the consent text; the supervisor and the committee can see them on request (task YG-3) |
 | Implementation | Starts in sprint S1 (27 Oct – 9 Nov 2026): skeleton, CI, data model, authentication, PWA shell |
 | Setup, run and test instructions | Added together with the first runnable code (task YG-14) |
 

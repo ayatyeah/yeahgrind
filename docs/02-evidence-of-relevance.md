@@ -63,15 +63,15 @@ There is no external client. The users are students, and their needs are establi
 - Three semi-structured interviews were held in October 2026 with AITU students who are not involved in the project: two conversations (Russian and English, transcribed) and one set of written answers (English).
 - Questions followed parts A–E and G of the guide in [research/interview-guide.md](research/interview-guide.md). The concept probe with prototype screens (part F) was not run, so no hypothesis relies on it.
 - Consent and pseudonymized notes follow [research/consent-and-recruitment.md](research/consent-and-recruitment.md). Names, teachers and courses are removed; Russian quotes are translated.
-- Notes are kept in [research/interview-notes/](research/interview-notes/), one file per interview, using the template.
+- Notes are written one file per interview using the [template](research/interview-notes/TEMPLATE.md). They are kept outside the public repository, as promised in the consent text; the supervisor and the committee can see them on request.
 
 **Participants.**
 
 | Code | Profile | Date | Mode / language | Notes |
 |---|---|---|---|---|
-| I-01 | IT student, second year or above; frequent AI user; studies mostly alone | Oct 2026 | Conversation, audio-recorded · RU | [I-01.md](research/interview-notes/I-01.md) |
-| I-02 | Student who prepares mainly for hard disciplines shortly before exams; fluent in RU and EN | Oct 2026 | Written answers · EN | [I-02.md](research/interview-notes/I-02.md) |
-| I-03 | Student who studies with friends and holds a scholarship; heavy AI user | Oct 2026 | Conversation, transcribed · EN | [I-03.md](research/interview-notes/I-03.md) |
+| I-01 | IT student, second year or above; frequent AI user; studies mostly alone | Oct 2026 | Conversation, audio-recorded · RU | On request |
+| I-02 | Student who prepares mainly for hard disciplines shortly before exams; fluent in RU and EN | Oct 2026 | Written answers · EN | On request |
+| I-03 | Student who studies with friends and holds a scholarship; heavy AI user | Oct 2026 | Conversation, transcribed · EN | On request |
 
 **Synthesis method.**
 1. Every observation is tagged with H1–H10 or a new theme (N1, N2, …).

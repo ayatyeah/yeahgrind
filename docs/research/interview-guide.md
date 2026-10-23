@@ -68,7 +68,7 @@ Thank the participant. Remind them how to withdraw their notes.
 
 ## Note-taking and synthesis
 
-- Use [`interview-notes/TEMPLATE.md`](interview-notes/TEMPLATE.md) and save each interview as `interview-notes/I-0n.md` within 24 hours.
+- Use [`interview-notes/TEMPLATE.md`](interview-notes/TEMPLATE.md) and save each interview as `I-0n.md` in the team's private notes folder (not in the public repository) within 24 hours.
 - Use pseudonymous IDs only (I-01 … I-05). Remove names of people, teachers and courses that could identify someone.
 - **Synthesis:**
   1. Copy every observation onto a card (in the shared board or a table) and tag it with H1–H10 or a new theme N1, N2, …

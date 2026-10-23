@@ -40,8 +40,10 @@ Record the answers in the notes file: `Consent: yes/no`, `Audio: yes/no`.
 | Data | Where stored | Retention |
 |---|---|---|
 | Audio recording (if allowed) | Interviewer's encrypted device, not in Git | Deleted after the notes are written (≤ 48 h) |
-| Pseudonymized notes | `docs/research/interview-notes/` | Until the end of the diploma project |
+| Pseudonymized notes | The team's private copy, outside the public repository; shown to the supervisor and the committee on request | Until the end of the diploma project |
 | Mapping of codes to real names | Not created | — |
 | Study measurements (tests, timings, SUS) | `docs/evaluation/` (pseudonymized CSV) | Until the end of the diploma project |
+
+The project repository is public, so completed notes are not committed to it; this keeps the promise in the consent text that only the team, the supervisor and the committee can read them.
 
 Personal data is handled according to the Law of the Republic of Kazakhstan "On Personal Data and Their Protection" (No. 94-V, 21 May 2013).
