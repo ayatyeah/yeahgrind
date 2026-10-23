@@ -7,7 +7,7 @@
 | Date | 24 October 2026 |
 | Repository | https://github.com/ayatyeah/yeahgrind (public; interview notes are shared with the supervisor and the committee on request) |
 | Tag | `pre-defense-1` |
-| YouTrack | Project YG; backlog of 56 tasks for import in [`project-management/youtrack-backlog.csv`](../../project-management/youtrack-backlog.csv) |
+| YouTrack | Project YG: https://yeahgrind.youtrack.cloud/projects/YG — 56 tasks with owners, priorities, estimates, deadlines and dependency links; Scrum board with sprints PD1 and S1–S13: https://yeahgrind.youtrack.cloud/agiles/204-1. Source of the import: [`project-management/youtrack-backlog.csv`](../../project-management/youtrack-backlog.csv) |
 
 ## Completed work (checklist of the 24 October minimum requirements)
 
@@ -23,7 +23,7 @@
 | Architectural diagrams with editable sources (context, use case, component + data model, 2 sequences, deployment) | [07-architecture.md](../07-architecture.md), [diagrams/](../../diagrams/) |
 | Prototype materials | [prototype/index.html](../../prototype/index.html), [screens](../../prototype/screens/), [08-ux-prototype.md](../08-ux-prototype.md), [api/openapi.yaml](../../api/openapi.yaml) |
 | Verification and evaluation plan | [09-verification-evaluation-plan.md](../09-verification-evaluation-plan.md) |
-| YouTrack with assigned and prioritized tasks | [10-project-management-risks.md](../10-project-management-risks.md), [backlog](../../project-management/youtrack-backlog.csv) |
+| YouTrack with assigned and prioritized tasks | [Project YG](https://yeahgrind.youtrack.cloud/projects/YG), [board](https://yeahgrind.youtrack.cloud/agiles/204-1), [10-project-management-risks.md](../10-project-management-risks.md), [backlog](../../project-management/youtrack-backlog.csv) |
 | Supervisor review | [11-supervisor-feedback.md](../11-supervisor-feedback.md) |
 | Progressive contributions of each member | Git history, pull requests and reviews (each member commits from their own account) |
 
@@ -37,7 +37,6 @@
 
 ## Outstanding for this stage
 
-- YG-11: create the YouTrack project YG and import the prepared backlog (56 tasks with owners, priorities, deadlines and acceptance criteria).
 - YG-12: the supervisor's review of this package; comments go into the log in [11-supervisor-feedback.md](../11-supervisor-feedback.md) with a decision and a task each.
 
 ## Next tasks (sprint S1, 27 Oct – 9 Nov 2026)

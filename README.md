@@ -73,7 +73,7 @@ Comparison and scoring: [technology comparison](docs/05-technology-comparison.md
 
 | | |
 |---|---|
-| YouTrack project (YG) | Backlog of 56 assigned and prioritized tasks for import: [`project-management/youtrack-backlog.csv`](project-management/youtrack-backlog.csv) |
+| YouTrack project (YG) | [https://yeahgrind.youtrack.cloud/projects/YG](https://yeahgrind.youtrack.cloud/projects/YG) — 56 assigned and prioritized tasks with dependency links; [Scrum board](https://yeahgrind.youtrack.cloud/agiles/204-1) with sprints PD1 and S1–S13. Import source: [`project-management/youtrack-backlog.csv`](project-management/youtrack-backlog.csv) |
 | Documentation | [`docs/`](docs/) — index below |
 | Diagrams | [`diagrams/`](diagrams/) (editable PlantUML + SVG/PNG) |
 | Prototype | [`prototype/index.html`](prototype/index.html) (clickable mockups), [screens](prototype/screens/) |
