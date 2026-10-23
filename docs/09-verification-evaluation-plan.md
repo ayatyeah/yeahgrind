@@ -10,7 +10,7 @@
 | EQ4 | Does the video pipeline produce correct, usable short videos reliably and cheaply? | B3: 50-job batch, seeded-error test, rater study | — | ≥ 90 % success; p90 ≤ 5 min; ≥ 80 % of seeded errors flagged; mean rated accuracy and clarity ≥ 4.0/5; ≤ USD 0.05 per video |
 | EQ5 | Is generated learning content valid? | B4: skill maps, units, questions reviewed by raters | — | 100 % acyclic maps; ≥ 90 % units within limits; ≥ 85 % of generated questions correct and unambiguous before moderation |
 | EQ6 | Is AI grading of open answers close to human grading and safe? | B5: reference set | Two human graders; keyword grader | Pass/fail agreement ≥ 85 %, κ ≥ 0.70; 0 successful injections; 0 answer leaks in hints |
-| EQ7 | Do students learn more efficiently and find the platform usable compared with a non-adaptive baseline? | Learning and usability study with a 1-week retention test (§9.5) | Same content as static text + fixed quiz | Higher median normalized learning gain than the baseline; SUS ≥ 70; task success ≥ 85 % |
+| EQ7 | How large is the learning gain, and how usable is the platform, compared with a non-adaptive baseline? | Learning and usability study with a 1-week retention test (§9.5) | Same content as static text + fixed quiz | Median paired difference in normalized gain ≥ 0.10 in favor of YeahGrind, reported with a 95 % CI; SUS ≥ 70; task success ≥ 85 % |
 | EQ8 | Are performance, security, accessibility and integrity targets met? | B6 and audits | — | NFR-01 – NFR-14 thresholds |
 
 ## 9.2 Requirement-to-test matrix
@@ -117,7 +117,7 @@ Acceptance scenarios in Given/When/Then form are kept in [`tests/acceptance/`](.
 
 The study takes one 75-minute session per participant plus a 10-minute online retention test one week later. Following Weidlich et al. (2025), the treatment is specified precisely, the control is active (the same content without video and adaptivity), and retention is measured after a delay.
 
-- **Design:** within-subject and counterbalanced. Each participant studies two comparable topics (e.g. *SQL LEFT JOIN + GROUP BY* and *Python list comprehensions + dictionaries*), one per condition. The order of conditions and the topic–condition pairing are balanced across participants.
+- **Design:** within-subject and counterbalanced. Each participant studies two comparable topics (e.g. *SQL LEFT JOIN + GROUP BY* and *Python list comprehensions + dictionaries*), one per condition. The order of conditions and the topic–condition pairing are balanced: each of the four combinations is used by three participants.
   - **Condition A — YeahGrind:** micro-units with generated video, adaptive quiz with feedback, mastery report.
   - **Condition B — baseline:** the same unit texts as static pages (no video, no adaptivity) and a fixed 10-item quiz with correct/incorrect feedback.
 - **Participants:** 12 AITU students who were not involved in development and did not take part in the requirement interviews. Recruitment and consent follow [research/consent-and-recruitment.md](research/consent-and-recruitment.md).
@@ -135,8 +135,8 @@ The study takes one 75-minute session per participant plus a 10-minute online re
   - **efficiency:** time on study tasks;
   - **usability:** task success, time-on-task, errors and assists; SUS; perceived workload;
   - **qualitative:** debrief themes.
-- **Analysis:** medians and interquartile ranges; paired Wilcoxon signed-rank test with effect size *r* for learning gain and time. Results are reported with confidence intervals and treated as evidence for this setting, not as a population-wide claim.
-- **Thresholds:** higher median normalized gain in condition A; SUS ≥ 70; task success ≥ 85 %.
+- **Analysis:** medians and interquartile ranges; paired Wilcoxon signed-rank test with effect size *r* for learning gain and time. With 12 participants the study is a pilot: it estimates the size of the effect rather than proving it. The paired difference in gain is reported with its median and a 95 % bootstrap confidence interval, and results are treated as evidence for this setting, not as a population-wide claim.
+- **Thresholds:** median paired difference in normalized gain (A − B) of at least 0.10; SUS ≥ 70; task success ≥ 85 %.
 - **Fairness of the comparison:**
   - post-test items are written independently of the quiz item bank;
   - both conditions use the same unit texts and the same time limit;
@@ -169,32 +169,42 @@ Failed thresholds are reported together with the corrective YouTrack task.
 
 ## 9.8 Test cases
 
-| Test ID | Test scenario | Expected result |
-|---|---|---|
-| TC-01 | Registration, sign-in and access to another user\'s goal | Sign-in works; access to foreign resources returns 404 |
-| TC-02 | Sign-in with a Microsoft account from another tenant | Rejected; AITU accounts accepted |
-| TC-03 | Learning activity before consent | No analytics event stored; progress stored |
-| TC-04 | Account deletion | No user-owned row or private media object remains |
-| TC-05 | Goal with pasted material containing injected instructions | Material treated as data; skill map valid and acyclic |
-| TC-06 | Pathway with locked prerequisites | No unit of a locked skill is planned |
-| TC-07 | Check-in with 40 free minutes | Planned time ≤ 40 min; every item has a reason |
-| TC-08 | Review due for a mastered skill | Review item included in today\'s plan |
-| TC-09 | Moodle calendar connection and refresh | Deadlines and course names imported; changed and canceled events updated; URL never returned |
-| TC-10 | First request for a unit video | Status 202; job runs; narration 60–120 s with WebVTT captions; the player shows slides in sync and exports MP4 or WebM |
-| TC-11 | Second request for the same video | Status 200; no new LLM or TTS call |
-| TC-12 | Script with an ungrounded sentence | Status needs_review; not visible to students; listed in moderation queue |
-| TC-13 | LLM or TTS timeout during a video job | Retried up to 3 times, then failed with a message; no fake output |
-| TC-14 | Kazakh video before the quality check | Status 409 |
-| TC-15 | Next-question selection | Item with P closest to 0.7; no repeats; ≤ 500 ms |
-| TC-16 | Correct and incorrect answers | Ability and mastery move in the expected direction |
-| TC-17 | Same answer submitted twice with one idempotency key | Stored result returned; no second update or reward |
-| TC-18 | Request for hints and question data | No response contains the answer key or rubric |
-| TC-19 | Open answer with a prompt-injection attempt | Graded by the rubric; injection has no effect |
-| TC-20 | Feed with friends\' and non-friends\' events | Only permitted events shown; scores private |
-| TC-21 | Study group progress | Group total shown; no member ranking by default |
-| TC-22 | Moderator rejects a generated question | Question never served again; action logged |
-| TC-23 | 100 parallel duplicate reward requests | Exactly one reward; no negative balance |
-| TC-24 | Reminder during quiet hours | Not sent; delivered after quiet hours |
-| TC-25 | Load test with 50 virtual users | p95 ≤ 500 ms; error rate < 1 % |
-| TC-26 | Accessibility scan of core screens | Zero critical or serious axe-core violations |
-| TC-27 | Learning and usability study vs baseline | Gain, retention, SUS and task metrics recorded for both conditions |
+| Test ID | Test scenario | Expected result | Requirements |
+|---|---|---|---|
+| TC-01 | Registration, sign-in and access to another user\'s goal | Sign-in works; access to foreign resources returns 404 | FR-01, NFR-05 |
+| TC-02 | Sign-in with a Microsoft account from another tenant | Rejected; AITU accounts accepted | FR-02 |
+| TC-03 | Learning activity before consent | No analytics event stored; progress stored | FR-03, NFR-06 |
+| TC-04 | Account deletion | No user-owned row or private media object remains | FR-04 |
+| TC-05 | Goal with pasted material containing injected instructions | Material treated as data; skill map valid and acyclic; every unit has one objective and takes 2–5 min | FR-06, FR-08, FR-09 |
+| TC-06 | Pathway with locked prerequisites | No unit of a locked skill is planned | FR-11 |
+| TC-07 | Check-in with 40 free minutes | Planned time ≤ 40 min; every item has a reason | FR-12, FR-13 |
+| TC-08 | Review due for a mastered skill | Review item included in today\'s plan | FR-15 |
+| TC-09 | Moodle calendar connection and refresh | Deadlines and course names imported; changed and canceled events updated; URL never returned | FR-16, FR-17 |
+| TC-10 | First request for a unit video | Status 202; job runs; narration 60–120 s with WebVTT captions; the player shows slides in sync and exports MP4 or WebM | FR-19, FR-20 |
+| TC-11 | Second request for the same video | Status 200; no new LLM or TTS call | FR-22 |
+| TC-12 | Script with an ungrounded sentence | Status needs_review; not visible to students; listed in moderation queue | FR-21, FR-36 |
+| TC-13 | LLM or TTS timeout during a video job | Retried up to 3 times, then failed with a message; no fake output | FR-20, NFR-11 |
+| TC-14 | Kazakh video before the quality check | Status 409 | FR-23 |
+| TC-15 | Next-question selection | Item with P closest to 0.7; no repeats; ≤ 500 ms | FR-26, NFR-02 |
+| TC-16 | Correct and incorrect answers | Ability and mastery move in the expected direction | FR-27 |
+| TC-17 | Same answer submitted twice with one idempotency key | Stored result returned; no second update or reward | FR-27, NFR-07 |
+| TC-18 | Request for hints and question data | No response contains the answer key or rubric | FR-29 |
+| TC-19 | Open answer with a prompt-injection attempt | Graded by the rubric; injection has no effect | FR-28 |
+| TC-20 | Feed with friends\' and non-friends\' events | Only permitted events shown; scores private | FR-32 |
+| TC-21 | Study group progress | Group total shown; no member ranking by default | FR-34 |
+| TC-22 | Moderator rejects a generated question | Question never served again; action logged | FR-36 |
+| TC-23 | 100 parallel duplicate reward requests | Exactly one reward; no negative balance | FR-37, NFR-07 |
+| TC-24 | Reminder during quiet hours | Not sent; delivered after quiet hours | FR-39 |
+| TC-25 | Load test with 50 virtual users | p95 ≤ 500 ms; error rate < 1 % | NFR-01 |
+| TC-26 | Accessibility scan of core screens | Zero critical or serious axe-core violations | NFR-09 |
+| TC-27 | Learning and usability study vs baseline | Gain, retention, SUS and task metrics recorded for both conditions | NFR-08 |
+| TC-28 | Goal with a daily budget of 4 and of 61 minutes; subject list with a connected calendar | Out-of-range budgets return 422; course names from the Moodle calendar are offered as subjects | FR-05 |
+| TC-29 | Video playback with the keyboard only | Captions on by default and switchable; transcript searchable; speed control works; sources panel lists the unit paragraphs | FR-24, NFR-09 |
+| TC-30 | Question bank of a pilot skill after generation | ≥ 5 validated questions; items failing schema, key or distractor checks stay drafts and are never served | FR-25 |
+| TC-31 | Mastery report of a seeded learner | Values equal stored mastery; weak skills first; links to recommended units | FR-30 |
+| TC-32 | Friend request, acceptance and blocking | Friends-only items visible only to accepted friends; a blocked user disappears from feed and search | FR-31 |
+| TC-33 | Report of a video, a question and a feedback item | Moderation record with a content snapshot created within 5 s | FR-35 |
+| TC-34 | Seven days without activity (fake clock) | No XP, coins, mastery or progress removed; a paused streak resumes without loss | FR-38 |
+| TC-35 | Learning events with and without analytics consent; evaluation export | Events logged only with consent; export contains unit view, watch %, question ID, correctness and response time, but no name, e-mail or account ID | FR-41, NFR-06 |
+| TC-36 | Batch of 50 video jobs (benchmark B3) | p90 time to ready ≤ 5 min; failure rate < 10 % after retries | NFR-03 |
+| TC-37 | Core flows at 320, 390 and 1440 px; Lighthouse mobile audit; installation | No horizontal scroll; Lighthouse performance ≥ 80; installable on Android and iOS | NFR-10 |

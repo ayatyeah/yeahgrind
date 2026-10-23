@@ -33,7 +33,6 @@ YeahGrind serves three human roles and depends on six external systems:
 - **Microsoft Entra ID:** used only for sign-in, through the authorization code flow with PKCE; only the university tenant is allowed.
 - **Moodle:** read only through the student's own iCalendar export.
 - **LLM and TTS providers:** receive unit text and answers without personal identifiers.
-- **Object storage:** holds generated media, which the browser downloads through signed, expiring URLs.
 
 ## 7.3 Use cases
 
@@ -202,5 +201,5 @@ External services: the OpenAI API (text generation and grading) and Gemini TTS (
 | Every functional requirement belongs to a use case | FR-01 – FR-41 are covered by UC1 – UC20 (§7.3); FR-37 – FR-41 are cross-cutting |
 | Every use case has a responsible component | §7.3 and §7.4 |
 | Every entity is written by exactly one module | Content: Goal, SourceMaterial, Skill, MicroUnit; Video: Video; Assessment: Question, Attempt, Mastery; Pathway/Planning: CheckIn, PlanItem, CalendarConnection; Social: Friendship, FeedEvent, Comment, StudyGroup, GroupMember; Moderation: Report; Rewards: RewardLedger; Identity: User, ConsentRecord |
-| Every external system has an adapter and a failure strategy | AI gateway (LLM, TTS), storage client, LMS importer, push sender, auth (NFR-11) |
+| Every external system has an adapter and a failure strategy | AI gateway (LLM, TTS), LMS importer, push sender, auth (NFR-11) |
 | Key scenarios are shown end to end | Sequence diagrams 5 and 6; prototype scenarios S1–S6 in [08](08-ux-prototype.md) |

@@ -30,7 +30,7 @@ Thirteen key technical decisions are compared, each with three alternatives (fou
   - 2 meets it only partly;
   - 1 does not meet it.
 - Weighted total = Σ(weight × score) / 100, with a maximum of 5.00. Totals were computed with a script. ✅ marks the chosen option.
-- **Release-1 choices.** Where the team deliberately starts with a simpler option than the top-scoring one, the summary shows both the release-1 choice and the target, and the decision names the condition for switching (D6, D10–D12).
+- **Release-1 choices.** Where the team deliberately starts with a simpler option than the top-scoring one, the summary shows both the release-1 choice and the target, and the decision names the condition for switching (D6, D10–D12). The release-1 reason is always one of three: an integration the team has already tested, no paid subscription during development, or a scale at which a second system adds more work than it saves. Team readiness is deliberately kept out of the weighted criteria, so that it does not change the comparison of the technologies themselves.
 
 ### Summary
 
@@ -555,7 +555,6 @@ VPS [T65, T66]:
 - [T76] FFmpeg. *Download* (FFmpeg 9.0.2, 18 Sep 2026). https://ffmpeg.org/download.html
 - [T77] FFmpeg. *FFmpeg Filters Documentation: subtitles*. https://ffmpeg.org/ffmpeg-filters.html#subtitles-1
 - [T78] HeyGen. *AI Video Generator Pricing Compared (2026): Cost Per Minute* (last updated 20 Oct 2026). https://www.heygen.com/blog/ai-video-generator-pricing
-- [T79] HeyGen Help Center. *Voice: Languages We Support*. https://help.heygen.com/en/articles/11391932-voice-languages-we-support
 - [T80] Synthesia. *Pricing*. https://www.synthesia.io/pricing
 - [T81] Synthesia Help Center. *Synthesia stock voices*. https://help.synthesia.io/en/articles/7194908-synthesia-stock-voices
 

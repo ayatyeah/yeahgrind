@@ -83,7 +83,7 @@ R = responsible, C = consulted. Every pull request is reviewed by the other memb
 |---|---|---|---|---|
 | LLM API key with a monthly budget cap | Content generation, scripts, grading | Yernar | S2 | Second provider through the adapter |
 | TTS provider with Russian (and Kazakh) voices | Video narration | Yernar | S7 | Alternative TTS adapter; KK narration stays off until quality is confirmed |
-| S3-compatible object storage + CDN | Video delivery | Yernar | S7 | Storage on the app host volume for the pilot |
+| S3-compatible object storage (target, ADR-0010) | Narration audio once media exceed about 5 GB | Yernar | After M6 | Narration stays in PostgreSQL `bytea` |
 | Microsoft Entra ID app registration in the university tenant | FR-02 | Yernar (with university IT) | S2 | E-mail sign-in stays available |
 | Moodle iCalendar export available to students | FR-17 | Yernar | S4 | Manual `.ics` upload; subjects typed in |
 | Public assessment dataset with a license that allows research use | B2 | Yernar | S10 | Another open dataset; simulation-only evaluation |
@@ -110,6 +110,7 @@ Probability (P) and impact (I): 1 = low, 3 = high. Score = P × I.
 | R10 | LLM/TTS provider outage or API change | 2 | 2 | 4 | Provider adapters, fallback providers, feature-level degradation | Error rate > 5 % / Yernar |
 | R11 | Not enough participants for interviews or the study | 2 | 2 | 4 | Early recruitment across programs; short sessions; flexible time | < 3 interviews by 23 Oct / Ayat |
 | R12 | Uneven contribution visibility in Git history | 2 | 2 | 4 | Own accounts; PR review by the other member; weekly board review | Board review / both |
+| R13 | Free-tier AI terms allow the provider to use submitted content | 2 | 3 | 6 | Free tier only with synthetic test content; paid tier without use of content before any student material is narrated (NFR-06); provider terms checked before the pilot | Pilot start or a change of terms / Yernar |
 
 ## 10.7 Next steps after pre-defense 1
 

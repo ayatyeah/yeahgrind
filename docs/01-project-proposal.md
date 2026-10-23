@@ -32,7 +32,7 @@ Each of the analyzed systems ([04](04-existing-systems-comparison.md)) covers pa
 
 | Group | Description | Key needs |
 |---|---|---|
-| **Primary: university students (18+)** | AITU undergraduates who study for courses and exams on their own or in small groups | Short units that fit free time; a clear next step; explanations in video form; honest feedback on what they do not know yet; studying with friends |
+| **Primary: university students (18+)** | AITU undergraduates who study for courses and exams on their own or in small groups | Short units grouped into focused study sessions; a clear next step; explanations in video form; honest feedback on what they do not know yet; studying with friends |
 | Secondary: study-group members | 2–8 students preparing together for the same course or exam | Shared goal and progress, sharing units and videos, discussion, cooperative challenges |
 | Secondary: content moderator | Project team member during the pilot | Review reported or unverified generated content (scripts, videos, questions) |
 
@@ -47,7 +47,7 @@ Design, implement and evaluate a web platform that does five things:
 - assesses knowledge adaptively, updating mastery after every answer;
 - supports cooperative learning with friends and study groups.
 
-The evaluation shows whether this gives better learning efficiency and usability than a non-adaptive baseline.
+Component benchmarks check each part against a threshold, and a pilot study with 12 students estimates the learning gain and usability compared with a non-adaptive baseline.
 
 ## 1.6 Objectives
 
@@ -60,7 +60,7 @@ The evaluation shows whether this gives better learning efficiency and usability
 | O5 | Implement the short-form video generation pipeline with content validation | 60–120 s video with narration and captions; ≥ 90 % job success; p90 generation time ≤ 5 min; ≥ 80 % of seeded factual errors caught |
 | O6 | Implement adaptive knowledge assessment | Next-item selection ≤ 500 ms; mastery model beats a non-adaptive baseline in predicting answers on a public dataset (AUC); quizzes stop within 10 items |
 | O7 | Implement social learning features and moderation | Friends, feed, sharing, study groups with cooperative goals, reporting and review queue work end to end |
-| O8 | Evaluate the platform | Learning and usability study (n = 12, one session + 1-week retention test) against a non-adaptive baseline: higher learning gain, SUS ≥ 70 |
+| O8 | Evaluate the platform | Learning and usability study (n = 12, one session + 1-week retention test) against a non-adaptive baseline: median paired difference in normalized gain ≥ 0.10 (pilot estimate with a 95 % CI), SUS ≥ 70 |
 
 ## 1.7 Expected outcomes
 

@@ -4,7 +4,7 @@
 
 The review covers the four parts of the topic — **microlearning, short (AI-generated) video, adaptive knowledge assessment and social learning** — and the evidence on AI tutoring and feedback that the design depends on. Planning, gamification and privacy are reviewed as supporting themes.
 
-- **Sources:** 28, of which 27 are peer-reviewed scientific publications and 20 are from 2021–2026. Six foundational works (2007–2016) are kept because current models and principles build on them. Details are in §3.6.
+- **Sources:** 28, of which 27 are peer-reviewed scientific publications and 20 are from 2021–2026. Eight earlier works (1995–2020) are kept because current models and principles build on them. Details are in §3.6.
 - **Verification:**
   - every DOI was resolved through the Crossref API on 21 October 2026 and checked against title, authors, venue and pages;
   - each DOI was also checked for retractions and corrections;

@@ -63,7 +63,7 @@ There is no external client. The users are students, and their needs are establi
 - Three semi-structured interviews were held in October 2026 with AITU students who are not involved in the project: two conversations (Russian and English, transcribed) and one set of written answers (English).
 - Questions followed parts A–E and G of the guide in [research/interview-guide.md](research/interview-guide.md). The concept probe with prototype screens (part F) was not run, so no hypothesis relies on it.
 - Consent and pseudonymized notes follow [research/consent-and-recruitment.md](research/consent-and-recruitment.md). Names, teachers and courses are removed; Russian quotes are translated.
-- Notes are written one file per interview using the [template](research/interview-notes/TEMPLATE.md). They are kept outside the public repository, as promised in the consent text; the supervisor and the committee can see them on request.
+- Notes are written one file per interview using the [template](research/interview-notes/TEMPLATE.md). Audio recordings are kept only on the interviewer's encrypted device, never in the repository, and deleted within 48 hours after the notes are written. The notes are kept outside the public repository, as promised in the consent text; the supervisor and the committee can see them on request.
 
 **Participants.**
 
@@ -73,6 +73,8 @@ There is no external client. The users are students, and their needs are establi
 | I-02 | Student who prepares mainly for hard disciplines shortly before exams; fluent in RU and EN | Oct 2026 | Written answers · EN | On request |
 | I-03 | Student who studies with friends and holds a scholarship; heavy AI user | Oct 2026 | Conversation, transcribed · EN | On request |
 
+**Limitations.** The sample is small and not representative: three AITU students, two of whom use AI frequently or heavily (I-01, I-03). This raises the weight of AI use in H9 and in the new theme N1, so these results describe students who already use AI rather than all students. The interview results are used as design input for this project, not as general claims.
+
 **Synthesis method.**
 1. Every observation is tagged with H1–H10 or a new theme (N1, N2, …).
 2. For each hypothesis, participants who give a concrete supporting or contradicting episode are counted.
@@ -81,21 +83,23 @@ There is no external client. The users are students, and their needs are establi
    - *contradicted*: ≥ 3 contradict it;
    - *mixed*: any other result.
 4. New themes mentioned by ≥ 2 participants become candidate requirements.
+5. H10 asks for a preference rather than testing a claim, so it is reported without a status.
 
 **Findings.**
 
 | Hypothesis | Evidence from interviews (participant codes, episode) | Status | Effect on requirements |
 |---|---|---|---|
 | H1 Study happens in short, fragmented windows | All three study in long focused sessions: I-01 finishes a task in one sitting and "needs full immersion"; I-02 reads all materials 1–2 days before an exam, never while travelling; I-03 works 2–3 hours per session and in short breaks only watches topic videos | **Contradicted** | FR-09 kept (E1); FR-12 plans a focused session made of several micro-units; videos suit short breaks (FR-19) |
-| H2 Deadlines come from several channels; consolidation is manual | All three use Moodle as the only deadline source; I-01 checks it every day "in a rush" | **Mixed**: one channel, but manual daily checking | FR-17 kept; consolidation of other channels not needed |
+| H2a Deadlines come from several channels | All three use Moodle as the only deadline source (I-01, I-02, I-03) | **Contradicted** | Consolidation of other channels is not needed |
+| H2b Keeping track of deadlines takes manual effort | I-01 checks Moodle every day "in a rush"; I-02 checks it briefly; I-03 gives no episode | **Mixed** | FR-17 kept: the calendar import replaces the manual check |
 | H3 Choosing the next study step is a barrier | I-02 follows the closest deadline; I-03 sometimes does not know "where to start or what subject to do first"; I-01 works down a to-do list | **Mixed** | FR-11, FR-13 kept; deadline proximity stays in the priority (N3) |
 | H4 Short video is preferred for new topics if its sources are visible | All three combine text and video: video when tired (I-01), for examples (I-02), to visualize how something works (I-03); none prefers video alone | **Mixed**: video as a complement, not a replacement | FR-19 – FR-24 kept; video is added to the text unit, as in E2 |
 | H5 Gaps are discovered late; short adaptive quizzes would be used | I-02 sometimes finds topics not understood; I-01 "assumes" understanding after finishing a task; I-03 never finds gaps late and checks understanding by answering questions | **Mixed** | FR-26, FR-30 kept: question-based checking is the method I-03 already uses |
 | H6 Feedback that explains mistakes is preferred to full answers | All three want an explanation of the mistake; I-01 and I-03 want the correct answer right away | **Mixed**: explanation yes, withholding the answer no | FR-28 kept; FR-29 clarified: hints are optional before an attempt, the correct answer and the reason are shown right after it |
 | H7 Students want to learn with peers, keep scores private and cooperate rather than compete | I-03 studies with friends and keeps scores private; I-02 works with others in projects and wants to compare quiz scores to discuss mistakes; I-01 mostly studies alone and is motivated by leaderboards | **Mixed** | FR-32: scores private by default, shared on purpose; FR-34 cooperative goal kept; ranking stays out of release 1 |
-| H8 Punitive mechanics (streak loss, league demotion) demotivate | I-01 is motivated by competition; I-03 by the risk of losing a scholarship; I-02 is not affected by points or streaks | **Mixed** (not supported) | FR-38 kept on published evidence (E10) and as an ethical rule |
+| H8 Punitive mechanics (streak loss, league demotion) demotivate | I-01 is motivated by competition; I-03 by the risk of losing a scholarship; I-02 is not affected by points or streaks | **Mixed**: no participant supports it; I-01 and I-03 contradict it | FR-38 kept on published evidence (E10) and as an ethical rule |
 | H9 Students share context and answers, but not identity, with AI services and want control | All three upload study notes to AI; I-02 expects that personal info does not leak; I-03 shares only non-private information | **Supported** | FR-03, FR-04, NFR-06 kept; no personal data is needed to build a pathway |
-| H10 Preferred interface and narration language | English is acceptable to all three (I-01 at an English-medium university, I-03 because most videos are in English); I-02 also Russian; I-01 wants Kazakh only for a Kazakh-language class | **Supported**: EN first, RU second, KK by subject | FR-23 priorities confirmed (EN M, RU S, KK C); language is chosen per goal |
+| H10 Preferred interface and narration language | English is acceptable to all three (I-01 at an English-medium university, I-03 because most videos are in English); I-02 also Russian; I-01 wants Kazakh only for a Kazakh-language class | Preference question, no status: EN first, RU second, KK by subject | FR-23 priorities confirmed (EN M, RU S, KK C); language is chosen per goal |
 | New themes | N1 AI answers can be wrong or over-general (I-01, I-02); N2 video for tired moments and short breaks (I-01, I-03); N3 deadlines and grade stakes set priorities (I-02, I-03); N4 friends help to stay focused (I-03) | — | N1 → FR-21, FR-24 (grounding, sources); N2 → FR-12 suggests the unit video at low energy; N3 → FR-11 deadline factor |
 
 ## 2.5 Verified findings and design hypotheses
@@ -108,7 +112,8 @@ Verified findings are kept apart from design hypotheses. **E**-items are verifie
 | E14 | Getting LMS deadlines into a study tool takes a manual seven-step export; the personal URL is a secret; the feed needs regular refresh; course names can be derived | Process observation (§2.3) | Verified |
 | G1–G8 | Existing products leave the gaps listed in [04 §4.5](04-existing-systems-comparison.md#45-gap-analysis-and-implications-for-requirements) | Official product documentation | Verified |
 | H1 | Students study in short, fragmented windows (≤ 30 min) on most days | Interviews I-01 … I-03 | Contradicted |
-| H2 | Deadlines come from several channels; consolidating them is manual | Interviews | Mixed |
+| H2a | Deadlines come from several channels | Interviews | Contradicted |
+| H2b | Keeping track of deadlines takes manual effort | Interviews | Mixed |
 | H3 | Choosing the next study step is a real barrier to starting | Interviews | Mixed |
 | H4 | For a new topic, students prefer a short video to long text, provided its sources are visible | Interviews | Mixed |
 | H5 | Students discover gaps late and would use short adaptive quizzes that show progress | Interviews | Mixed |
@@ -116,7 +121,7 @@ Verified findings are kept apart from design hypotheses. **E**-items are verifie
 | H7 | Students want to learn with peers, but keep scores private and prefer cooperation to ranking | Interviews | Mixed |
 | H8 | Punitive mechanics demotivate | Interviews | Mixed |
 | H9 | Students accept sharing study context and answers with AI services, not their identity, and want control | Interviews | Supported |
-| H10 | Preferred language for interface and narration (KK / RU / EN) | Interviews | Supported (EN, RU; KK by subject) |
+| H10 | Preferred language for interface and narration (KK / RU / EN) | Interviews | Preference recorded without a status (EN, RU; KK by subject) |
 
 ## 2.6 From findings to requirements
 
@@ -133,4 +138,4 @@ Verified findings are kept apart from design hypotheses. **E**-items are verifie
 | E13, H9, G8 | Trust and control over data | FR-03, FR-04, NFR-06 | Opt-in analytics, export and deletion, no identifiers in AI requests |
 | H10, G7 | Study in one's own language | FR-23, FR-40 | EN/RU/KK interface; Kazakh narration after a native-speaker check |
 
-After the interviews, priorities in [06](06-requirements-specification.md) were reviewed. H1 was contradicted, but FR-09 keeps its priority because it rests on published evidence (E1); only the design of the day plan changed (one focused session of several units). H6 clarified FR-29: hints stay optional before an attempt, and the correct answer is shown right after it. H9 and H10 confirmed FR-03, FR-04, NFR-06 and the language priorities of FR-23. No requirement was dropped. Each change is recorded in the pull request for task YG-3.
+After the interviews, priorities in [06](06-requirements-specification.md) were reviewed. H1 was contradicted, but FR-09 keeps its priority because it rests on published evidence (E1); only the design of the day plan changed (one focused session of several units). H6 clarified FR-29: hints stay optional before an attempt, and the correct answer is shown right after it. H9 confirmed FR-03, FR-04 and NFR-06, and the language preferences recorded under H10 confirmed the priorities of FR-23. No requirement was dropped. Each change is recorded in the pull request for task YG-3.

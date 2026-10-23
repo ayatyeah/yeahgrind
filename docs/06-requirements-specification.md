@@ -24,7 +24,6 @@
 | Moodle LMS | Source of personal deadlines and course names (iCalendar export) |
 | LLM provider | Generates skill maps, units, scripts and questions; grades open answers |
 | TTS provider | Produces narration audio for videos |
-| Object storage | Stores generated videos, captions and thumbnails |
 | Scheduler | Time-based triggers: LMS refresh, review reminders, job cleanup |
 
 ## 6.3 Functional requirements
@@ -122,8 +121,8 @@ W-01 native apps · W-02 own model training · W-03 deep knowledge tracing · W-
 | NFR-02 | Performance | Next-item selection ≤ 500 ms p95; pathway recomputation ≤ 2 s p95 | M | B |
 | NFR-03 | Video throughput | A 60–120 s video is ready in ≤ 5 min for p90 of jobs; failure rate < 10 % over 50 jobs after retries | M | B |
 | NFR-04 | AI latency | Open-answer grading p95 ≤ 15 s; progress state after 300 ms; timeout 30 s with retry | S | B |
-| NFR-05 | Security | OWASP ASVS 5.0 Level 1 checklist; secrets only on the server; ownership check on every resource; signed, expiring URLs for private media; secret scanning in CI | M | T, I |
-| NFR-06 | Privacy | No names, e-mails or account IDs in AI/TTS requests; provider storage disabled where available; consent before analytics; Law of the RK No. 94-V | M | I, T |
+| NFR-05 | Security | OWASP ASVS 5.0 Level 1 checklist; secrets only on the server; ownership check on every resource; private media served only through authorized routes; secret scanning in CI | M | T, I |
+| NFR-06 | Privacy | No names, e-mails or account IDs in AI/TTS requests; provider storage disabled where available; Gemini TTS on the paid tier, where content is not used to improve Google products, before any student content is narrated, and the free tier only with test content; consent before analytics; Law of the RK No. 94-V | M | I, T |
 | NFR-07 | Integrity | Rewards and mastery updates idempotent and transactional: 100 parallel duplicate submissions → one effect | M | T |
 | NFR-08 | Usability | Mean SUS ≥ 70 (n = 12); a new user reaches the first micro-unit within 3 min of sign-up | S | U |
 | NFR-09 | Accessibility | WCAG 2.2 AA for core flows; captions for every video; 0 critical/serious axe-core violations; full keyboard operation | M | T, I |
