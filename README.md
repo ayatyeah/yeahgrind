@@ -31,16 +31,13 @@
 
 YeahGrind turns a learning goal or a university subject, optionally with the student's own lecture notes, into a personal path of **micro-units**. Each unit fits the time the student has today, is explained by a **short generated video**, and is checked with an **adaptive quiz** that updates mastery per skill. Students learn together with friends and study groups through shared progress and cooperative goals.
 
-```mermaid
-flowchart LR
-    A["🎯 Goal or subject<br/>+ own notes"] --> B["🗺️ Skill map<br/>with prerequisites"]
-    B --> C["📅 Today's micro-plan<br/>with a reason per unit"]
-    C --> D["🎬 Micro-unit<br/>+ short video"]
-    D --> E["🧠 Adaptive quiz<br/>Elo, P ≈ 0.7"]
-    E --> F["📈 Mastery update"]
-    F --> C
-    F --> G["👥 Friends and<br/>study groups"]
-```
+<div align="center">
+
+| 🎯 Goal or subject | → | 🗺️ Skill map | → | 📅 Today's micro-plan | → | 🎬 Micro-unit + video | → | 🧠 Adaptive quiz | → | 📈 Mastery | → | 👥 Study group |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| <sub>own notes optional</sub> | | <sub>prerequisites</sub> | | <sub>a reason per unit</sub> | | <sub>captions, sources</sub> | | <sub>next question at P ≈ 0.7</sub> | | <sub>back to the plan</sub> | | <sub>cooperative goals</sub> |
+
+</div>
 
 <table>
 <tr>
