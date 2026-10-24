@@ -1,13 +1,6 @@
 <div align="center">
 
-<a href="https://astanait.edu.kz/">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/aitu-logo-white.svg">
-    <img src="docs/assets/aitu-logo.svg" height="64" alt="Astana IT University">
-  </picture>
-</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="docs/assets/yeahgrind-logo.png" height="64" alt="YeahGrind logo">
+<picture><source media="(prefers-color-scheme: dark)" srcset="docs/assets/aitu-logo-white.svg"><img src="docs/assets/aitu-logo.svg" height="64" alt="Astana IT University"></picture>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="docs/assets/yeahgrind-logo.png" height="64" alt="YeahGrind logo">
 
 # YeahGrind
 
