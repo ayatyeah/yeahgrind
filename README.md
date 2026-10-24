@@ -31,13 +31,8 @@
 
 YeahGrind turns a learning goal or a university subject, optionally with the student's own lecture notes, into a personal path of **micro-units**. Each unit fits the time the student has today, is explained by a **short generated video**, and is checked with an **adaptive quiz** that updates mastery per skill. Students learn together with friends and study groups through shared progress and cooperative goals.
 
-<div align="center">
-
-| 🎯 Goal or subject | → | 🗺️ Skill map | → | 📅 Today's micro-plan | → | 🎬 Micro-unit + video | → | 🧠 Adaptive quiz | → | 📈 Mastery | → | 👥 Study group |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| <sub>own notes optional</sub> | | <sub>prerequisites</sub> | | <sub>a reason per unit</sub> | | <sub>captions, sources</sub> | | <sub>next question at P ≈ 0.7</sub> | | <sub>back to the plan</sub> | | <sub>cooperative goals</sub> |
-
-</div>
+<p align="center"><b>🎯 Goal or subject &nbsp;→&nbsp; 🗺️ Skill map &nbsp;→&nbsp; 📅 Today's micro-plan &nbsp;→&nbsp; 🎬 Micro-unit + video &nbsp;→&nbsp; 🧠 Adaptive quiz &nbsp;→&nbsp; 📈 Mastery &nbsp;→&nbsp; 👥 Study group</b><br>
+<sub>Mastery feeds the next day's plan: weak skills come back as units, mastered ones as spaced reviews.</sub></p>
 
 <table>
 <tr>
